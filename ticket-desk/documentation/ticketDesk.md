@@ -140,7 +140,7 @@ Passing web.config file location to this second script Set-WebConfigSettings tha
 
 ## Building Docker Image
 ```
-cd D:\windows-containers-demos\ticket-help-desk\application
+cd D:\windows-containers-demos\ticket-desk\application
 docker build -t ticketdesk:latest  -f .\ticketDesk.Dockerfile .
 ```
 
@@ -158,7 +158,7 @@ The first service we are going to create is Azure Container Registry (ACR). It i
 
 
 ```
-D:\windows-containers-demos\ticket-help-desk\scripts\powershell-scripts\create-acr.ps1
+D:\windows-containers-demos\ticket-desk\scripts\powershell-scripts\create-acr.ps1
 ```
 
 ## Publish/Push your custom Docker image into Azure Container Registry
@@ -176,7 +176,7 @@ Now, enable Microsoft Defender for container registries from the portal which in
 File Share will store Application's Raw data and Blob storage will store Application's Images.
 
 ```
-D:\windows-containers-demos\ticket-help-desk\scripts\powershell-scripts\create-file-share.ps1
+D:\windows-containers-demos\ticket-desk\scripts\powershell-scripts\create-file-share.ps1
 ```
 
 ## Implementing Azure Active Directory Applications
@@ -184,7 +184,7 @@ For integrating AAD with Azure Kubernetes Service, we need to create a server an
 This is the authentication part. 
 For the authorization part, it will be managed by Role and Role Binding Kubernetes objects which is further explained.
 ```
-D:\windows-containers-demos\ticket-help-desk\scripts\powershell-scripts\create-ad-apps.ps1
+D:\windows-containers-demos\ticket-desk\scripts\powershell-scripts\create-ad-apps.ps1
 ```
 
 After creation of AAD apllications you will see the _Server App ID_, _Server App Secret_, _Client App ID_ on powershell console, you have to update these values in _Variables.txt_ file before creating Kubernetes Cluster
@@ -192,7 +192,7 @@ After creation of AAD apllications you will see the _Server App ID_, _Server App
 ## Create Azure AKS Cluster
 This script will create AKS and add a window's node pool which enables Cluster Autoscaling, Cluster Auto-Upgrade, Azure Monitor, Calico as a network Policy, Application Gateway to be used as the ingress of an AKS cluster.
 ```
-D:\windows-containers-demos\ticket-help-desk\scripts\powershell-scripts\create-aks.ps1
+D:\windows-containers-demos\ticket-desk\scripts\powershell-scripts\create-aks.ps1
 ```
 
 We need to connect to AKS in order to run kubectl commands against the new cluster, as an admin.
@@ -204,20 +204,20 @@ az aks get-credentials --resource-group=$aksResourceGroupName --name=$clusterNam
 then let’s create the Role which will define access to certain resources. For example, only read information from pods.
 Apply role ,role binding for accessing cluster which is Authorization part for AAD , update _Name_ parameter value in yaml files before applying
 ```
-cd D:\windows-containers-demos\ticket-help-desk\scripts\deployment-scripts\role-binding-mainfest-files
+cd D:\windows-containers-demos\ticket-desk\scripts\deployment-scripts\role-binding-mainfest-files
 kubectl apply -f .
 ```
 then You can access nodes, pods etc.
 
 ## Create Azure SQL database
 ```
-D:\windows-containers-demos\ticket-help-desk\scripts\powershell-scripts\create-sql-server-database.ps1
+D:\windows-containers-demos\ticket-desk\scripts\powershell-scripts\create-sql-server-database.ps1
 ```
 Next Query the database, using SSMS, enter your server login.
 You will get connected to Azure SQL database.
  Run the SQL script on sql query editor.
 ```
-D:\windows-containers-demos\ticket-help-desk\application\TicketDesk.Web.Client\App_Data\NewDatabaseScripts
+D:\windows-containers-demos\ticket-desk\application\TicketDesk.Web.Client\App_Data\NewDatabaseScripts
 1_TicketDeskObjects.sql
 2_SecurityObjects.sql
 3_SecurityDefaultUsers.sql
@@ -226,7 +226,7 @@ D:\windows-containers-demos\ticket-help-desk\application\TicketDesk.Web.Client\A
 ## Create Azure Key Vault 
 Cluster can access this key-vault secrets and certificate, save secrets and certificate in key vault, secrets containing connection string of SQL Server database.
 ```
-D:\windows-containers-demos\ticket-help-desk\scripts\powershell-scripts\create-key-vault.ps1
+D:\windows-containers-demos\ticket-desk\scripts\powershell-scripts\create-key-vault.ps1
 ```
 Assign access policy for AKS Cluster managed identity.
 
@@ -257,7 +257,7 @@ az keyvault secret set --name $secret3Name --value "Data Source=<your sql server
 ## Create Azure File Share Secrets
 kubernetes cluster will use this secret for mounting file share as volume in application deployment.
 ```
-D:\windows-containers-demos\ticket-help-desk\scripts\powershell-scripts\aks-file-share-secrets.ps1
+D:\windows-containers-demos\ticket-desk\scripts\powershell-scripts\aks-file-share-secrets.ps1
 ```
 check Secrets
 ```
@@ -267,7 +267,7 @@ kubectl get secrets
 ## Install CSI Provider
 We are installing CSI provider using helm chart. By default CSI secret provider is installed for linux nodes.We have to install it for our window's node & enable windows parameters.
 ```
-D:\windows-containers-demos\ticket-help-desk\scripts\powershell-scripts\deploy-csi-akv-provider.ps1
+D:\windows-containers-demos\ticket-desk\scripts\powershell-scripts\deploy-csi-akv-provider.ps1
 ```
 Check secret provider pods on window's node.
 ```
@@ -283,7 +283,7 @@ Apply Manifest files
 - eshop-deployment
 
 ```
-cd  D:\windows-containers-demos\ticket-help-desk\scripts\deployment-scripts\app-deployment-mainfest-files 
+cd  D:\windows-containers-demos\ticket-desk\scripts\deployment-scripts\app-deployment-mainfest-files 
 kubectl apply -f .
 ```
 ```
