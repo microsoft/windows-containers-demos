@@ -166,8 +166,8 @@ Open PowerShell , Login to Azure Container Registry
 
 ```
 docker login <acr-container-registry>
-docker tag eshopapp:v2.1 <acr-container-registry>/eshopapp:v2.1
-docker push <acr-container-registry>/eshopapp:v2.1
+docker tag ticketdesk:latest <acr-container-registry>/ticketdesk:latest
+docker push <acr-container-registry>/ticketdesk:latest
 ```
 
 Now, enable Microsoft Defender for container registries from the portal which includes a vulnerability scanner to scan the images in Azure Container Registry registries and provide deeper visibility into your images vulnerabilities.
@@ -280,7 +280,7 @@ Apply Manifest files
 - persistent-volume
 - persistent-volume-claim
 - secret-provider-class
-- eshop-deployment
+- ticket-desk-deployment
 
 ```
 cd  D:\windows-containers-demos\ticket-desk\scripts\deployment-scripts\app-deployment-mainfest-files 
