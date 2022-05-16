@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eshop-app-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: eshop-app-deployment
+  template:
+    metadata:
+      labels:
+        app: eshop-app-deployment
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": windows
+      containers:
+      - name: eshop-app-deployment
+        image: eshopregistry120121.azurecr.io/eshop11:v2 
+        ports:
+        - containerPort: 80
+        env:
+        - name: CONNSTR_CatalogDBContext
+          valueFrom:
+            secretKeyRef:
+              name: akvsecretscertwin
+              key: CATALOG_DB_CONTEXT
+        - name: APPSETTING_StorageConnectionString
+          valueFrom:
+            secretKeyRef:
+              name: akvsecretscertwin
+              key: STORAGE_CONNECTION_STRING           
+        volumeMounts:
+          - name: azure
+            mountPath: /mnt/azure
+          - name: secrets-store-inline
+            mountPath: "/mnt/secrets-store"
+            readOnly: true
+        imagePullPolicy: Always
+      volumes:
+      - name: secrets-store-inline
+        csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "azure-kvname-win"
+      - name: azure
+        persistentVolumeClaim:
+            claimName: azurefile
+  
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eshop-app-deployment
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: eshop-app-deployment
