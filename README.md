@@ -1,28 +1,19 @@
-# Project
+# Overview
+Windows Container Demos is a collection of demo apps to show how you can modernize Windows Server applications with Windows containers and then deploy and run on Azure Kubernetes Service (AKS).
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+Here is the list of the demo apps:
+1. TicketDesk
+2. eShop
 
-As the maintainer of this project, please make a few updates:
+Under each folder of the apps, you can find out what the app is about, the tutorial to moderize it with Windows containers and deploy to AKS, a video that illusrates the moderization steps and source code.
 
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
+Please feel free to download and try it out!
 
-## Contributing
+We welcome your feedback. We are not monitoring the issues here. Instead please go to our GitHub community and file issues there: https://github.com/microsoft/Windows-Containers/issues. Or you can privately email us: win-containers@microsoft.com
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
-Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+Have fun!
 
-When you submit a pull request, a CLA bot will automatically determine whether you need to provide
-a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
-provided by the bot. You will only need to do this once across all repos using our CLA.
 
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
-contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
 ## Trademarks
 
