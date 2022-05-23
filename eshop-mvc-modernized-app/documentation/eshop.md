@@ -21,7 +21,7 @@ we are containerizing the .NET Framework web apps with Windows Containers and Do
 - Azure monitoring (for logging and debugging purpose)
 - Azure defender and security tool (for security purpose and scanning)	
 - Network Policy for CNI- Calico 
-- Azure Active Directory (AAD)	
+- Azure Active Directory (AAD)
 - Cluster Auto Scaler	
 - Cluster Auto Upgrade
 
@@ -70,17 +70,9 @@ We are using Windows Server Core Image and Installing necessary tools for buildi
 Startup PowerShell script will create an infinite loop to run the container.
 This prevents the container from exiting and getting web dot config location from second script Set-Web Config settings that read environment variables and overrides configuration in Web dot config by modifying the file.
 
-## Clone the repository
-
-```json
-git clone https://github.com/microsoft/windows-containers-demos #Working directory is D:/
-cd windows-containers-demos # Current working directory is D:\windows-containers-demos 
-```
-
 ## Building Docker Image
 ```
-cd D:\windows-containers-demos\eshop-mvc-modernized-app
-docker build -t eshopapp:latest  -f .\eshop.Dockerfile .
+docker build -t eshopapp:v2.1  -f .\eshop.Dockerfile .
 ```
 
 ## Create Azure Services
@@ -89,7 +81,7 @@ Now, first create Azure Container Registry.
 Open Powershell , login to Azure using command "az login".
 
 ```
-D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\create-acr.ps1
+C:\windows-containers\demo-apps\EshopMVCModernized-App\scripts\powershell-scripts\create-acr.ps1
 ```
 
 ## Publish/Push your custom Docker image into Azure Container Registry
@@ -97,8 +89,8 @@ Open PowerShell , Login to Azure Container Registry
 
 ```
 docker login <acr-container-registry>
-docker tag eshopapp:latest <acr-container-registry>/eshopapp:latest
-docker push <acr-container-registry>/eshopapp:latest
+docker tag eshopapp:v2.1 <acr-container-registry>/eshopapp:v2.1
+docker push <acr-container-registry>/eshopapp:v2.1
 ```
 
 Now, Enable Microsoft Defender for container registries from the portal Which includes a vulnerability scanner to scan the images in Azure Container Registry registries and provide deeper visibility into your images vulnerabilities.
@@ -107,7 +99,7 @@ Now, Enable Microsoft Defender for container registries from the portal Which in
 File Share will store Applications Raw data and Blob storage will store Application's Images.
 
 ```
-D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\create-file-share.ps1
+C:\windows-containers\demo-apps\EshopMVCModernized-App\scripts\powershell-scripts\create-file-share.ps1
 ```
 *Implementing blob storage from code side*
 
@@ -116,14 +108,14 @@ For integrating AAD with Azure Kubernetes Service, we need to create a server an
 This is the authentication part. 
 For the authorization part, it will be managed by Role and Role Binding Kubernetes objects which is further explained.
 ```
-D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\create-ad-apps.ps1
+C:\windows-containers\demo-apps\EshopMVCModernized-App\scripts\powershell-scripts\create-ad-apps.ps1
 ```
 After creation of AAD applications you will see the Server App ID, Server App Secret, Client App ID on powershell console, you have to update these values in Variables.txt file before creating Kubernetes Cluster.
 
 ## Create Azure AKS Cluster
 This script will create AKS and add a window's node pool which enables Cluster Autoscaling, Cluster Auto-Upgrade, Azure Monitor, Calico as a network Policy, Application Gateway to be used as the ingress of an AKS cluster.
 ```
-D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\create-aks.ps1
+C:\windows-containers\demo-apps\EshopMVCModernized-App\scripts\powershell-scripts\create-aks.ps1
 ```
 It will ask for device login enter code.
 Now Connect to AKS cluster as admin using command on connect on Portal
@@ -134,34 +126,45 @@ az aks get-credentials --resource-group=$aksResourceGroupName --name=$clusterNam
 then Run command kubectl get nodes ,where we can see user don't have access to cluster so
 Apply role ,role binding for accessing cluster which is Authorization part for AAD 
 ```
-cd D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\deployment-scripts\role-binding-mainfest-files 
+cd C:\windows-containers\demo-apps\EshopMVCModernized-App\scripts\deployment-scripts\role-binding-mainfest-files 
 kubectl apply -f .
 ```
 then You can access nodes, pods etc.
 
 ## Create Azure SQL database
 ```
-D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\create-sql-server-database.ps1
+C:\windows-containers\demo-apps\EshopMVCModernized-App\scripts\powershell-scripts\create-sql-server-database.ps1
 ```
-Next Query the database, using SSMS, Enter your server login.
+
+First need to update database connection string in web.config file from Visual Studio IDE for performing Database Migration steps.
+
+
+Next Query the database, using SSMS or Azure Sql databases Query Editor.
+
+Using SSMS Enter your server admin login.
 You will get connected to Azure SQL database.
- Run the SQL script on sql query editor.
+ Run the following SQL scripts on SQL query editor.
 ```
-D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\database-scripts
+C:\windows-containers\demo-apps\EshopMVCModernized-App\scripts\database-scripts
 dbo.catalog_brand_hilo.Sequence.sql
 dbo.catalog_hilo.Sequence.sql
 dbo.catalog_type_hilo.Sequence.sql
 ```
 Then Open Visual Studio IDE ,on Package Manager Console perform database Migration.
-Run Enable-Migrations , Add-Migration InitialCreate ,and update-database -Verbose.
-Again Back to SSMS , Run insert data SQL- Query
+Run 
+```
+Enable-Migrations -Force
+Add-Migration InitialCreate 
+update-database -Verbose
+```
+Again Back to SSMS . Run insert database SQL Query,
 ```
 insertdata.sql
 ```
 ## Create Azure Key Vault 
 Cluster can access this key-vault secrets and certificate, save secrets and certificate in key vault, secrets containing connection string of SQL Server database and storage account connection string.
 ```
-D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\create-key-vault.ps1
+C:\windows-containers\demo-apps\EshopMVCModernized-App\scripts\powershell-scripts\create-key-vault.ps1
 ```
 Assign access policy for AKS Cluster managed identity.
 
@@ -187,7 +190,7 @@ az keyvault secret set --name $secret2Name --value "DataSource=storageaccountcon
 ## Create Azure File Share Secrets
 kubernetes cluster will use this  secret and storage account key that should be used with file share mounting while pod deployment.
 ```
-D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\aks-file-share-secrets.ps1
+C:\windows-containers\demo-apps\EshopMVCModernized-App\scripts\powershell-scripts\aks-file-share-secrets.ps1
 ```
 check Secrets
 ```
@@ -197,15 +200,15 @@ kubectl get secrets
 ## Install CSI Provider
 We are installing CSI provider using helm chart, by default CSI secret provider install for linux nodes we have to install it for our window's node enable windows parameters.
 ```
-D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\deploy-csi-akv-provider.ps1
+C:\windows-containers\demo-apps\EshopMVCModernized-App\scripts\powershell-scripts\deploy-csi-akv-provider.ps1
 ```
 Check secret provider pods on window's node
 ```
 kubectl get pods
 ```
 
-## Deploy Application on AKS
-Now we are ready to deploy application on AKS Cluster,
+## Deploy Application on AKS 
+
 Apply Manifest files
 - persistent-volume
 - persistent-volume-claim
@@ -213,7 +216,7 @@ Apply Manifest files
 - eshop-deployment
 
 ```
-cd  D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\deployment-scripts\app-deployment-mainfest-files 
+cd  C:\windows-containers\demo-apps\EshopMVCModernized-App\scripts\deployment-scripts\app-deployment-mainfest-files 
 kubectl apply -f .
 ```
 ```
@@ -229,12 +232,11 @@ For pod deployment specifying replica sets, environment variable taking value fr
 and using load balancer service for accessing deployment.
 
 
-Check the pod and services by accessing the service external IP
+Check the pod and services by accessing the service external IP 
 ```
 kubectl get pods
 kubectl get services
 ```
-
 
 ![image](./login.png)
 
