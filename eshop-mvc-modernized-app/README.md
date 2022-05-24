@@ -39,10 +39,10 @@ Figure below shows the containerized eShop legacy web application and deployment
 This is the docker file
 
 ```
-FROM mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2019
+FROM mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2019  
 
 # Install Chocolatey
-RUN @powershell -NoProfile -ExecutionPolicy Bypass -Command "$env:ChocolateyUseWindowsCompression='false'; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"  
+RUN @powershell -NoProfile -ExecutionPolicy Bypass -Command "$env:ChocolateyUseWindowsCompression='false'; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
 
 # Copy files
 RUN md c:\build
@@ -51,25 +51,31 @@ COPY . c:/build
 
 # Install build tools
 RUN powershell add-windowsfeature web-asp-net45 \
-    && choco install microsoft-build-tools -y --allow-empty-checksums -version 140.23107.10 \
+    && choco install microsoft-build-tools -y --allow-empty-checksums -version 14.0.23107.10 \
     && choco install dotnet4.6-targetpack --allow-empty-checksums -y \
-    && nuget install MSBuild.Microsoft.VisualStudio.Web.targets -Version 14.0.0.3\
-    && nuget install WebConfigTransformRunner -Version 1.0.0.1
+    && c:\build\nuget.exe install MSBuild.Microsoft.VisualStudio.Web.targets -Version 14.0.0.3 \
+    && c:\build\nuget.exe install WebConfigTransformRunner -Version 1.0.0.1
+	
+# Install LogMonitor.exe
+RUN powershell New-Item -ItemType Directory C:\LogMonitor; $downloads = @( @{ uri = 'https://github.com/microsoft/windows-container-tools/releases/download/v1.1/LogMonitor.exe'; outFile = 'C:\LogMonitor\LogMonitor.exe' }, @{ uri = 'https://raw.githubusercontent.com/microsoft/iis-docker/master/windowsservercore-insider/LogMonitorConfig.json'; outFile = 'C:\LogMonitor\LogMonitorConfig.json' } ); $downloads.ForEach({ Invoke-WebRequest -UseBasicParsing -Uri $psitem.uri -OutFile $psitem.outFile })
 
-# Delete existing files in wwwroot
 RUN powershell remove-item C:\inetpub\wwwroot\iisstart.*
 
-# Restore packages, build, copy
 RUN xcopy c:\build\src\eShopModernizedMVC\* c:\inetpub\wwwroot /s
 
-# Ensure container doesn't exit
-ENTRYPOINT powershell .\Startup
+# Enable ETW logging for Default Web Site on IIS
+RUN c:\windows\system32\inetsrv\appcmd.exe set config -section:system.applicationHost/sites /"[name='Default Web Site'].logFile.logTargetW3C:"File,ETW"" /commit:apphost
 
+# Start "C:\LogMonitor\LogMonitor.exe C:\ServiceMonitor.exe w3svc and application"
+
+ENTRYPOINT powershell .\Startup; C:\\LogMonitor\\LogMonitor.exe ; C:\\ServiceMonitor.exe w3svc
 ```
 We are using Windows Server Core Image and Installing necessary tools for building our project.
 
 Startup PowerShell script will create an infinite loop to run the container.
 This prevents the container from exiting and getting web dot config location from second script Set-Web Config settings that read environment variables and overrides configuration in Web dot config by modifying the file.
+
+Also implementing IIS Log Monitor for ASP.NET Windows Containers.
 
 ## Clone the repository
 
@@ -146,28 +152,27 @@ then You can access nodes, pods etc.
 D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\create-sql-server-database.ps1
 ```
 
-First need to update database connection string in web.config file from Visual Studio IDE for performing Database Migration steps.
+First we need to update database connection string in web.config file from Visual Studio IDE for performing Database Migration steps.
 
+Next Query the database, use SSMS or Azure Sql databases Query Editor.
 
-Next Query the database, using SSMS or Azure Sql databases Query Editor.
-
-Using SSMS Enter your server admin login.
+Using SSMS/Azure Query Editor Enter your server admin login.
 You will get connected to Azure SQL database.
-Run the following SQL scripts on SQL query editor.
+Run the following SQL scripts on SQL query editor
 ```
 D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\database-scripts
 dbo.catalog_brand_hilo.Sequence.sql
 dbo.catalog_hilo.Sequence.sql
 dbo.catalog_type_hilo.Sequence.sql
 ```
-Then Open Visual Studio IDE ,on Package Manager Console perform database Migration.
-Run
+Then Again Open Visual Studio IDE , Go to Package Manager Console perform database Migration steps.
+Run following commands,
 ```
 Enable-Migrations -Force
 Add-Migration InitialCreate 
 update-database -Verbose
 ```
-Again Back to SSMS . Run insert database SQL Query,
+Again Back to SSMS/Azure Query Editor. Run insert Query,
 ```
 insertdata.sql
 ```
@@ -202,13 +207,13 @@ kubernetes cluster will use this  secret and storage account key that should be 
 ```
 D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\aks-file-share-secrets.ps1
 ```
-check Secrets
+Check Secrets using ,
 ```
 kubectl get secrets
 ```
 
 ## Install CSI Provider
-We are installing CSI provider using helm chart, by default CSI secret provider install for linux nodes we have to install it for our window's node enable windows parameters.
+We are installing CSI provider using helm chart, by default CSI secret provider install for linux nodes we have to install it for our window's node for that enable windows parameters.
 ```
 D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\deploy-csi-akv-provider.ps1
 ```
@@ -251,9 +256,11 @@ kubectl get pods
 kubectl get services
 ```
 
-It will give the windows authentication prompt for credentials ,Enter gMSA user credentials and you can access the Application.
+It will give the windows authentication prompt for credentials ,Enter gMSA user credentials and next you can access the Application.
 
 ![image](images/login.png)
 
 *You can inspect the container's file system and check the file share mounting secrets and key vault secrets.*
 *we can check blob storage in storage account inside container where pics container is created where application images are stored.*
+
+
