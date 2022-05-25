@@ -1,4 +1,4 @@
-## PollApp - Modernizing Python web application with Windows Container and Azure Cloud
+## PollApp - Modernizing Python web application with Nano server and Azure Cloud
 This repository contains a sample of Django-poll web application and how to modernize it using Windows Container(Nano-server) and Azure Cloud.
 
 ## Overview
@@ -28,11 +28,11 @@ To containerize the Python-Django web application using Windows Container(Nano-s
 ## Architecture
 Figure below shows the simple scenario of the original Python web application.
 
-![image](C:\thirdapp\windows-containers-demos1\django-poll-app\documentation\overview.png)
+![image](./overview.png)
 
 Figure below shows the containerized Django-poll web application and deployment to a Kubernetes cluster.
 
-![image](C:\thirdapp\windows-containers-demos1\django-poll-app\documentation\Architecture.png)
+![image](./Architecture.png)
 
 ## Dockerfile for containerized Python web application
 
@@ -170,7 +170,7 @@ kubectl get pods
 kubectl get services
 ```
 
-![image](C:\thirdapp\windows-containers-demos1\django-poll-app\documentation\1.PNG)
+![image](./1.png)
 
 *You can inspect the container's file system and check the file share mounting secrets and key vault secrets.*
 *You can also monitor cluster from azure portal*
