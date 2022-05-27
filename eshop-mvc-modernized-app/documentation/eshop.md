@@ -6,7 +6,7 @@ Windows Containers should be used as a way to improve deployments to production,
 Deploying the ASP.NET MVC app (eShopModernizedMVC) to the Azure Kubernetes Service.
 
 ## Goals for this walkthrough
-we are containerizing the .NET Framework web apps with Windows Containers and Docker without changing its code and then Deploying this Windows Containers-based app to Azure Kubernetes Service.
+We are containerizing the .NET Framework web apps with Windows Containers and Docker without changing its code and then Deploying this Windows Containers-based app to Azure Kubernetes Service.
 
 ## Pre-requisite on Windows machine/VM
 - *Docker Desktop on Windows*, For creating and building images of application.
