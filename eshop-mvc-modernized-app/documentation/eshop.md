@@ -9,7 +9,7 @@ Deploying the ASP.NET MVC app (eShopModernizedMVC) to the Azure Kubernetes Servi
 We are containerizing the .NET Framework web apps with Windows Containers and Docker without changing its code and then Deploying this Windows Containers-based app to Azure Kubernetes Service.
 
 ## Pre-requisite on Windows machine/VM
-- *Docker Desktop on Windows*, For creating and building images of application.
+- *Docker Desktop on Windows*, for creating and building images of application.
 - *Azure CLI*, Azure Command-Line Interface (CLI) is a cross-platform command-line tool. You can use the Azure CLI for Windows to connect to Azure and execute administrative commands on Azure resources. 
 
 ## Implemented Azure Services
