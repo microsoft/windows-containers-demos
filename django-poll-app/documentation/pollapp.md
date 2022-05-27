@@ -30,7 +30,7 @@ Figure below shows the simple scenario of the original Python web application.
 
 ![image](./overview.png)
 
-Figure below shows the containerized Django-poll web application and deployment to a Kubernetes cluster.
+Figure below shows the containerized Django-PollApp web application and deployment to a Kubernetes cluster.
 
 ![image](./Architecture.png)
 
@@ -121,7 +121,14 @@ Run the below commands in your project directory in order to create database tab
 python manage.py makemigrations
 python manage.py migrate
 ```
-
+For running the application use below command: 
+```
+python manage.py runserver
+```
+To use admin panel you need to create superuser using this command:
+```
+ python manage.py createsuperuser 
+```
 ## Create Azure Key Vault
 Cluster can access this key-vault secrets and certificate, that contains connection string of MySQL server database.
 ```
@@ -141,14 +148,14 @@ Save database connection string in Azure Key Vault. Create database secret using
 
 On Powershell
 ```
-$keyVaultName = "<Azure-Key-Vault-Name>"
-$secret1Name = "DBHost"
-$secret2Name = "DBUser"
-$secret3Name = "DBPassword"
-$secret4Name = "DBName"
-$secret5Name = "DBPort"
+ $keyVaultName = "<Azure-Key-Vault-Name>"
+ $secret1Name = "DBHost"
+ $secret2Name = "DBUser"
+ $secret3Name = "DBPassword"
+ $secret4Name = "DBName"
+ $secret5Name = "DBPort"
 
-az keyvault secret set --name $secret1Name --value "Your DBHost" $secret2Name --value "Your DBUser" $secret3Name --value "Your DBPassword" $secret4Name --value "Your DBName" $secret5Name --value "Your DBPort" –-vault-name $keyVaultName
+ az keyvault secret set --name $secret1Name --value "DBHost" $secret2Name --value "DBUser" $secret3Name --value "DBPassword" $secret4Name --value "DBName" $secret5Name --value "DBPort" –-vault-name $keyVaultName
 ```
 ## Implementing Azure Pipelines
 Azure Pipelines automatically builds and tests code projects to make them available to others. It works with just about any language or project type. Azure Pipelines combines continuous integration (CI) and continuous delivery (CD) to test and build your code and ship it to any target.
@@ -157,7 +164,7 @@ To use Azure Pipelines, you need:
 - An organization in Azure DevOps.
 - To have your source code stored in a version control system.
 ## Building an Azure DevOps Build Pipeline
-you can now create a build pipeline inside. It’s where you will create builds to perform various tasks like compiling code, bringing in dependencies and more.
+You can now create a build pipeline inside. It’s where you will create builds to perform various tasks like compiling code, bringing in dependencies and more.
 - Linking a GitHub Repo to the Build Pipeline
 - Using existing source code for building the pipeline
 - Inspecting and Viewing the Build Pipeline in YAML
@@ -170,7 +177,9 @@ kubectl get pods
 kubectl get services
 ```
 
-![image](./1.png)
+![image](./login.png)
+
+![image](./afterlogin.png)
 
 *You can inspect the container's file system and check the file share mounting secrets and key vault secrets.*
-*You can also monitor cluster from azure portal*
+*You can also monitor cluster from azure portal*.
