@@ -39,9 +39,9 @@ Figure below shows the containerized Django-PollApp web application and deployme
 ```
 FROM vclick2cloud/nanoserver:1.0
 
-RUN md c:\windows_container\Django-poll-app\application
-WORKDIR c:/windows_container/Django-poll-app/application
-COPY . c:/windows_container/Django-poll-app/application
+RUN md D:\windows-containers-demos\django-poll-app\application
+WORKDIR D:/windows-containers-demos/django-poll-app/application
+COPY . D:/windows-containers-demos/django-poll-app/application
 
 RUN python -m pip install --upgrade pip
 RUN pip install -r requirements.txt
@@ -53,9 +53,17 @@ CMD python manage.py runserver 0.0.0.0:8000
 ```
 We are using Nano server base image and installing requirements to build the application.
 
+## Clone the repository
+
+```
+git clone https://github.com/microsoft/windows-containers-demos  #Working directory is D:/
+cd windows-containers-demos # Current working directory is D: \windows-containers-demos 
+```
+
 ## Building Docker Image
 ```
-docker build -t poll_app .
+cd D:\windows-containers-demos\django-poll-app
+docker build -t poll_app -f .\Dockerfile .
 ```
 ## Creating Azure Services
 First create Azure Container Registry(ACR).
@@ -66,7 +74,7 @@ We have created powershell scripts to create resources on Azure. Before running 
 
 ACR is used for storing application docker image. Follow the below path to get the script:
 
-_C:\windows_container\Django-poll-app\scripts\powershell-scripts\create-acr.ps1_
+_D:\windows-containers-demos\django-poll-app\scripts\powershell-scripts\create-acr.ps1_
 
 Run above script using:
 
@@ -85,7 +93,7 @@ docker push <acr-container-registry>/poll_app:latest
 ## Create file share
 File Share stores the raw data of application. Follow the below path to get the script:
 
-_C:\windows_container\Django-poll-app\scripts\powershell-scripts\create-file-share.ps1_
+_D:\windows-containers-demos\django-poll-app\scripts\powershell-scripts\create-file-share.ps1_
 
 Run above script using:
 ```
@@ -95,7 +103,7 @@ Run above script using:
 ## Create Azure AKS Cluster
 Below script creates AKS and add window's node pool that enables Cluster Autoscaling, Cluster Auto-Upgrade, Azure Monitor, Calico as a network Policy, Application Gateway to be used as the ingress of AKS cluster.
 
-_C:\windows_container\Django-poll-app\scripts\powershell-scripts\create-aks.ps1_
+_D:\windows-containers-demos\django-poll-app\scripts\powershell-scripts\create-aks.ps1_
 
 Run above script using:
 ```
@@ -110,7 +118,7 @@ az aks get-credentials --resource-group=$aksResourceGroupName --name=$clusterNam
 
 ## Create Azure MySQL database
 ```
-C:\windows_container\Django-poll-app\scripts\powershell-scripts\create-mysql-server-database.ps1
+D:\windows-containers-demos\django-poll-app\scripts\powershell-scripts\create-mysql-server-database.ps1
 ```
 Run above script using:
 ```
@@ -133,7 +141,7 @@ To use admin panel you need to create superuser using this command:
 ## Install CSI Provider
 We are installing CSI provider using helm chart, by default CSI secret provider install for linux nodes we have to install it for our window's node enable windows parameters.
 ```
-C:\windows_container\Django-poll-app\scripts\powershell-scripts\deploy-csi-akv-provider.ps1
+D:\windows-containers-demos\django-poll-app\scripts\powershell-scripts\deploy-csi-akv-provider.ps1
 ```
 Check secret provider pods on window's node:
 ```
@@ -143,7 +151,7 @@ kubectl get pods
 ## Create Azure Key Vault
 Cluster can access this key-vault secrets and certificate, that contains connection string of MySQL server database.
 ```
-C:\windows_container\Django-poll-app\scripts\powershell-scripts\create-key-vault.ps1
+D:\windows-containers-demos\django-poll-app\scripts\powershell-scripts\create-key-vault.ps1
 ```
 Assign access policy for AKS Cluster managed identity.
 
