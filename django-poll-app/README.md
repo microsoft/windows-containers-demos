@@ -28,16 +28,16 @@ To containerize the Python-Django web application using Windows Container(Nano-s
 ## Architecture
 Following figure shows the simple scenario of the original Python web application.
 
-![image](documentation/overview.png)
+![image](images/overview.png)
 
 Following figure shows the containerized Django-PollApp web application and deployment to a Kubernetes cluster.
 
-![image](documentation/Architecture.png)
+![image](images/Architecture.png)
 
 ## Dockerfile for containerized Python web application
 To create custom nanoserver image for django application, we have used following Dockerfile
 
-```json
+```
 ARG WINDOWS_VERSION
 FROM mcr.microsoft.com/windows/servercore:$WINDOWS_VERSION
 
@@ -113,7 +113,7 @@ CMD ["python"]
 
 Run following command to create custom nano-server image
 
-```json
+```
 docker build -t click2cloud/nanoserver:1.0 -f ./nanoserver.Dockerfile
 ```
 
@@ -267,9 +267,9 @@ kubectl get pods
 kubectl get services
 ```
 
-![image](documentation/login.png)
+![image](images/login.png)
 
-![image](documentation/afterlogin.png)
+![image](images/afterlogin.png)
 
 *You can inspect the container's file system and check the file share mounting secrets and key vault secrets.*
 *You can also monitor cluster from azure portal*.
