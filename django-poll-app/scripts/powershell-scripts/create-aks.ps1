@@ -47,9 +47,6 @@ if ($aksCLusterExists -eq $false) {
 		--load-balancer-sku=$loadBalancerSKU `
 		--node-vm-size=$nodeVMSize `
 		--generate-ssh-keys `
-        --aad-server-app-id=$serverAppId `
-		--aad-server-app-secret=$serverAppSecret `
-		--aad-client-app-id=$clientAppId `
         --enable-cluster-autoscaler `
         --auto-upgrade-channel="stable" `
         --min-count=$nodeMinCount `

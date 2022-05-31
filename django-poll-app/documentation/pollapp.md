@@ -129,6 +129,17 @@ To use admin panel you need to create superuser using this command:
 ```
  python manage.py createsuperuser 
 ```
+
+## Install CSI Provider
+We are installing CSI provider using helm chart, by default CSI secret provider install for linux nodes we have to install it for our window's node enable windows parameters.
+```
+C:\windows_container\Django-poll-app\scripts\powershell-scripts\deploy-csi-akv-provider.ps1
+```
+Check secret provider pods on window's node:
+```
+kubectl get pods
+```
+
 ## Create Azure Key Vault
 Cluster can access this key-vault secrets and certificate, that contains connection string of MySQL server database.
 ```
@@ -144,19 +155,8 @@ Open the Azure portal and perform the following steps: -
 - Click on ADD button.
 - At last, after adding policy click on save button.
 
-Save database connection string in Azure Key Vault. Create database secret using CLI or manually on portal.  Django poll-app application need give connection strings of database.It stored the connection string into key vault secret, such as-
+Save database connection string in Azure Key Vault. Create database secret manually on portal.  Django poll-app application need connection strings of database.It stored the connection string into key vault secrets.
 
-On Powershell
-```
- $keyVaultName = "<Azure-Key-Vault-Name>"
- $secret1Name = "DBHost"
- $secret2Name = "DBUser"
- $secret3Name = "DBPassword"
- $secret4Name = "DBName"
- $secret5Name = "DBPort"
-
- az keyvault secret set --name $secret1Name --value "DBHost" $secret2Name --value "DBUser" $secret3Name --value "DBPassword" $secret4Name --value "DBName" $secret5Name --value "DBPort" –-vault-name $keyVaultName
-```
 ## Implementing Azure Pipelines
 Azure Pipelines automatically builds and tests code projects to make them available to others. It works with just about any language or project type. Azure Pipelines combines continuous integration (CI) and continuous delivery (CD) to test and build your code and ship it to any target.
 
@@ -171,7 +171,7 @@ You can now create a build pipeline inside. It’s where you will create builds 
 - Manually Running the Azure Build Pipeline
 
 
-Check the pod and services by accessing the service external IP
+Finally we can check the pod and services by accessing the external IP
 ```
 kubectl get pods
 kubectl get services
