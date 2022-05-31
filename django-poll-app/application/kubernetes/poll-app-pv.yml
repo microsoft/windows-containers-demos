@@ -1,8 +1,8 @@
-#In this case we are using static file share.
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: azurefile
+  name: poll-azurefile-share
+  namespace: default
 spec:
   capacity:
     storage: 5Gi
@@ -10,7 +10,7 @@ spec:
     - ReadWriteMany
   azureFile:
     secretName: azure-secret-fshare #file share whill not 110% managed by aks so we need to export or tell the kubernetes what is the secret or storage account key that should be used with that file share :)
-    shareName: poll6771 # Azure file share name
+    shareName: pollsappfs012
     readOnly: false
   mountOptions:
   - dir_mode=0777

@@ -1,21 +1,18 @@
-subscriptionName="97bc8f84-568f-4b16-a365-14ffad56d435" # subscriptionName or subscriptionID
-resourceGroupName="poll-rg"
+subscriptionName="7302ac3b-2ad4-4e08-9aeb-03bfc5******" # subscriptionName or subscriptionID
+resourceGroupName="python-pollapp-rg"
 resourceGroupLocaltion="East US"
 # CONTAINER REGISTERY DETAILS
-acrRegistryName="pollacr999"
+acrRegistryName="pollsacr012"
 # STORAGE ACCOUNT FILE SHARE DETAILS
-aksStorageAccountname="pollsa999"
-aksFileSharename="pollfs999"
+aksStorageAccountname="pollsapp012"
+aksFileSharename="pollsappfs012"
 aksStorageAccountSKU="Standard_LRS"
 # AZURE KEY VAULT DETAILS
-akvName="pollkv999"
+akvName="pollappskv0123"
 # AZURE CLUSTER DETAILS
-clusterName="poll-cluster999"
-serverAppId="94cc892e-a41a-4700-958b-ca88faeb2730"
-serverAppSecret="AHHl~gLa6m4PoRZppV~w~iWKgMrq1U8M01"
-clientAppId="c75c6b8c-8a72-4f85-bd65-e121bbfcee9e"
-# creating AKS Cluster in different resource group
-aksResourceGroupName="poll-cluster-rg"
+clusterName="poll-clust-demo12"
+# CREATING AKS CLUSTER IN DIFFERENT RESOURCE GROUP
+aksResourceGroupName="aks-polls-cluster-rg"
 workerNodeCount=1
 kubernetesVersion="1.21.9"
 networkPlugin="azure"
@@ -23,15 +20,16 @@ loadBalancerSKU="Standard"
 nodeVMSize="Standard_B2s"
 winNodePoolName="npwin"
 winNodeVMSize="Standard_DS2_v2"
-winWorkerNodeCount=2
+winWorkerNodeCount=3
 enableAutoScaler=True
 nodeMinCount=1
 nodeMaxCount=4
 enableMonitoring=True
 server="click2cloud.net"
-mysqlServerName="mysqlpoll-server"
-mysqlServerAdminUser="polluser"
+# CREATING MYSQL SERVER 
+mysqlServerName="poll-server"
+mysqlServerAdminUser="user"
 mysqlServerAdminUserPassword="Root#123"
-mysqlDatabaseName="polldb"
+mysqlDatabaseName="polldatab"
 mysqlskuname="B_Gen5_1"
 mysqlstoragesize= "5120"
