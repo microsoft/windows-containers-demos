@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poll
+spec:
+  replicas: #replicaNo#
+  selector:
+    matchLabels:
+      app: poll
+  template:
+    metadata:
+      labels:
+        app: poll
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": windows
+      containers:
+      - name: poll
+        image: pollsacr012.azurecr.io/pollapp:1.0
+        ports:
+        - containerPort: 8000
+        env:
+        - name: APPNAME
+          value: "poll"
+        - name: db-host
+          valueFrom:
+            secretKeyRef:
+              name: akvsecretscertwin
+              key: DB-HOST
+        - name: db-user
+          valueFrom:
+            secretKeyRef:
+              name: akvsecretscertwin
+              key: DB-USER
+        - name: db-password
+          valueFrom:
+            secretKeyRef:
+              name: akvsecretscertwin
+              key: DB-PASSWORD
+        - name: db-port
+          valueFrom:
+            secretKeyRef:
+              name: akvsecretscertwin
+              key: DB-PORT
+        - name: db-name
+          valueFrom:
+            secretKeyRef:
+              name: akvsecretscertwin
+              key: DB-NAME
+        volumeMounts:
+          - mountPath: "/mnt/azure"
+            name: volume
+          - name: secrets-store-inline
+            mountPath: "/mnt/secrets-store"
+            readOnly: true
+        imagePullPolicy: Always
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "azure-kvname-win"
+        - name: volume
+          persistentVolumeClaim:
+            claimName: poll-azurefile-share
+  
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: poll
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8000
+  selector:
+    app: poll
