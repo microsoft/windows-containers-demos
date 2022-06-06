@@ -1,4 +1,4 @@
-FROM vclick2cloud/nanoserver:1.0
+FROM click2cloud/nanoserver:1.0
 
 RUN md D:\windows-containers-demos\django-poll-app\application
 
