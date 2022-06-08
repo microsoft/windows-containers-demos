@@ -1,0 +1,35 @@
+subscriptionName="233f533c-1d3f-4ec4-9c49-c*********" # subscriptionName or subscriptionID
+resourceGroupName="aks-rg-ticket-demo"
+resourceGroupLocaltion="East US"
+# CONTAINER REGISTERY DETAILS
+acrRegistryName="ticketdemoacr070123"
+# STORAGE ACCOUNT FILE SHARE DETAILS
+aksStorageAccountname="ticketsg09873"
+aksFileSharename="ticketfs045793"
+aksStorageAccountSKU="Standard_LRS"
+# AZURE KEY VAULT DETAILS
+akvName="ticketkeyvault1201w3"
+# AZURE CLUSTER DETAILS
+clusterName="ticket-clus-win"
+# creating AKS Cluster in different resource group
+aksResourceGroupName="ticket-clus-rg-win"
+workerNodeCount=1
+kubernetesVersion="1.21.9"
+networkPlugin="azure"
+loadBalancerSKU="Standard"
+nodeVMSize="Standard_B2s"
+winNodePoolName="npwin"
+winNodeVMSize="Standard_DS2_v2"
+winWorkerNodeCount=2
+enableAutoScaler=True
+nodeMinCount=1
+nodeMaxCount=4
+enableMonitoring=True
+serverAppId="64e1ddc7-eb14-481f-8af9-6247ef393c60"
+serverAppSecret="W_~rqv5WPbUGoYVlJe4JbYwis_9kj9gJ_L"
+clientAppId="51d698b6-fa83-4d08-b3cc-9b7a8e11ee45"
+server="click2cloud.net"
+sqlServerName="ticketDemoSer"
+sqlServerAdminUser="test"
+sqlServerAdminUserPassword="ROOT#123"
+sqlDatabaseName="ticketDemoDB"
