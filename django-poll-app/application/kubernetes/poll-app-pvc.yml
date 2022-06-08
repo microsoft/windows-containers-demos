@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: poll-azurefile-share
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: poll-azurefile-share
+  resources:
+    requests:
+      storage: 5Gi
