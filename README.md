@@ -4,7 +4,7 @@ Windows Container Demos is a collection of demo apps to show how you can moderni
 Here is the list of the demo apps:
 1. TicketDesk
 2. eShop (reference: https://github.com/dotnet-architecture/eShopOnContainers)
-
+3. Django poll app
 Under each folder of the apps, you can find out what the app is about, the tutorial to moderize it with Windows containers and deploy to AKS, a video that illusrates the moderization steps and source code.
 
 Please feel free to download and try it out!
