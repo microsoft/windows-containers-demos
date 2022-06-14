@@ -1,10 +1,10 @@
-FROM vclick2cloud/nanoserver:1.0
+FROM click2cloud/nanoserver:1.0
 
-RUN md c:\windows_container\Django-poll-app\application
+RUN md D:\windows-containers-demos\django-poll-app\application
 
-WORKDIR c:/windows_container/Django-poll-app/application
+WORKDIR  D:/windows-containers-demos/django-poll-app/application
 
-COPY . c:/windows_container/Django-poll-app/application
+COPY . D:/windows-containers-demos/django-poll-app/application
 
 RUN python -m pip install --upgrade pip
 

@@ -260,7 +260,10 @@ You can now create a build pipeline inside. It’s where you will create builds 
 - Inspecting and Viewing the Build Pipeline in YAML
 - Manually Running the Azure Build Pipeline
 
-
+So here, we can check the azure-pipeline yaml:
+```
+D:\windows-containers-demos\django-poll-app\application\azure-pipelines.yml                 
+```
 Finally we can check the pod and services by accessing the external IP
 ```
 kubectl get pods

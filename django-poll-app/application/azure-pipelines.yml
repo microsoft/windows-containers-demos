@@ -1,0 +1,111 @@
+# Docker
+# Build and push an image to Azure Container Registry
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- djangopollapp
+
+resources:
+- repo: self
+
+variables:
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: 'b4815097-c410-4c44-ae69-e2ecdec668f0'
+  imageRepository: 'pollapp'
+  containerRegistry: 'pollappacr0701234.azurecr.io'
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  tag: '$(Build.BuildId)'
+
+  # Agent VM image name
+  vmImageName: 'windows-2019'
+
+stages:
+- stage: Build
+  displayName: Build and push stage
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Pipeline.Workspace)/s/kubernetes'
+        ArtifactName: 'manifests'
+        publishLocation: 'Container'
+- stage: Deploy
+  displayName: Deploy to Dev
+  dependsOn: Build
+  variables:
+    acrsecret: k8sexamplesacrauth
+    acrdevurl: 'pollappacr0701234.azurecr.io'
+    replicaNo: 4
+  jobs:
+    - job: Deploy
+      displayName: Deploy to AKS
+      pool:
+        vmImage: windows-2019
+      steps:
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'current'
+          artifactName: 'manifests'
+          targetPath: '$(Pipeline.Workspace)/manifests'
+      - task: KubernetesManifest@0
+        inputs:
+          action: 'createSecret'
+          kubernetesServiceConnection: 'k8sconnection'
+          namespace: 'default'
+          secretType: 'dockerRegistry'
+          secretName: '$(acrsecret)'
+          dockerRegistryEndpoint: 'pollappacr0701234'
+      - task: AzureKeyVault@2
+        inputs:
+          azureSubscription: 'Visual Studio Enterprise Subscription – MPN(d9fd8068-6e3b-46d6-9951-5cf3dbf74daa)'
+          KeyVaultName: 'pollkeyvault1201456'
+          SecretsFilter: 'AzureStorageAccountName,AzureStorageAccountKey'
+          RunAsPreJob: false
+      - task: KubernetesManifest@0
+        inputs:
+          action: 'createSecret'
+          kubernetesServiceConnection: 'k8sconnection'
+          namespace: 'default'
+          secretType: 'generic'
+          secretName: 'azure-secret-fshare'
+          secretArguments: '--from-literal=azurestorageaccountname=$(AzureStorageAccountName) --from-literal=azurestorageaccountkey=$(AzureStorageAccountKey)'
+      - task: replacetokens@5
+        inputs:
+          rootDirectory: '$(Pipeline.Workspace)/manifests/'
+          targetFiles: 'pool-app-deployment.yml'
+          encoding: 'auto'
+          tokenPattern: 'custom'
+          tokenPrefix: '#'
+          tokenSuffix: '#'
+          writeBOM: true
+          actionOnMissing: 'warn'
+          keepToken: false
+          actionOnNoFiles: 'continue'
+          enableTransforms: false
+          enableRecursion: false
+          useLegacyPattern: false
+          enableTelemetry: true
+      - task: KubernetesManifest@0
+        inputs:
+          action: 'deploy'
+          kubernetesServiceConnection: 'k8sconnection'
+          namespace: 'default'
+          manifests: |
+            $(Pipeline.Workspace)/manifests/poll-app-pv.yml
+            $(Pipeline.Workspace)/manifests/poll-app-pvc.yml
+            $(Pipeline.Workspace)/manifests/poll-app-secret-provider-class.yml
+            $(Pipeline.Workspace)/manifests/pool-app-deployment.yml
+          containers: '$(acrdevurl)/$(imageRepository):$(tag)'
