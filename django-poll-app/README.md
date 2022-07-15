@@ -37,7 +37,8 @@ Following figure shows the containerized Django-PollApp web application and depl
 ## Dockerfile for containerized Python web application
 #### Note:
 Currently, the [official Python image](https://hub.docker.com/_/python?tab=tags&page=1&name=windows) **does not support the Nano server directly**. 
-It requires the Windows servercore base image, where we will first install the desired python into the servercore image, then we will create a new custom nanoserver image.
+It requires the Windows servercore base image, where we will first install the desired python into the servercore image, then we will create a new custom nanoserver image. Microsoft has a plan to work with the community to have Python images based on Nano Server container image developed. Once that's available, we'll update here.
+
 To create custom nanoserver image for django application, we have used following Dockerfile
 
 ```
