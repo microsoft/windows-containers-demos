@@ -1,17 +1,40 @@
-# Overview
+# Windows Container on Azure Kubernetes Service Demo Apps 
 Windows Container Demos is a collection of demo apps to show how you can modernize Windows Server applications with Windows containers and then deploy and run on Azure Kubernetes Service (AKS).
 
-Here is the list of the demo apps:
-1. TicketDesk
-2. eShop (reference: https://github.com/dotnet-architecture/eShopOnContainers)
-3. Django poll app
-Under each folder of the apps, you can find out what the app is about, the tutorial to moderize it with Windows containers and deploy to AKS, a video that illusrates the moderization steps and source code.
+## List of Demo Apps:
+1. TicketDesk: A legacy backoffice web apps (ASP.NET MVC), running on Windows Server 2019 Server Core containers.
 
-Please feel free to download and try it out!
+2. eShop: A legacy backoffice web app (ASP.NET WebForms and MVC), a sample from .NET architecture: https://github.com/dotnet-architecture/eShopModernizing, running on Windows Server 2019 Server Core containers.
 
-We welcome your feedback. We are not monitoring the issues here. Instead please go to our GitHub community and file issues there: https://github.com/microsoft/Windows-Containers/issues. Or you can privately email us: win-containers@microsoft.com
+3. Django poll app: A Python app modeled after this Django-Poll-App https://github.com/devmahmud/Django-Poll-App, running on Windows Server 2019 Nano Server containers.
 
-Have fun!
+Under each folder of the apps, you can find the following:
+- An overivew of the app
+- A tutorial that includes architecture diagrams and documentations
+- A video that illusrates the moderization steps
+- The source code
+
+## Demostrated Azure Services:
+- Azure Kubernetes Service (AKS)
+- Azure Container Registry (ACR)
+- Azure key vaults (database secret,StorageConnectionString)
+- Azure SQL
+- Azure Storage Account (file share,blob storage)
+- Azure monitoring (for logging and debugging purpose)
+- Azure defender and security tool (for security purpose and scanning)
+- Network Policy for CNI- Calico
+- Azure Active Directory (AAD)
+- gMSA on Azure Kubernetes Service
+- Cluster Auto Scaler
+- Cluster Auto Upgrade
+
+
+## We welcome your feedback
+Please feel free to download and try them out. Please also note these apps are developed for demo purpose only.  
+
+We are not actively monitoring the issues here. For any questions or feedback, please go to our GitHub community and file issues there: https://github.com/microsoft/Windows-Containers/issues. Or you can privately email us: win-containers@microsoft.com
+
+## Have fun!
 
 
 
