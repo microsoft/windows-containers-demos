@@ -1,0 +1,74 @@
+# Pipeline to build images
+trigger: none
+
+parameters:
+- name: timeoutInMinutes
+  displayName: Job Timeout in Minutes (default 240)
+  type: number
+  default: 240
+
+stages:
+- stage: Build_Images
+  jobs:
+  - job: Build_Images
+    displayName: Build Images
+    timeoutInMinutes: ${{ parameters.timeoutInMinutes }} # Timeout for a given job
+    continueOnError: 'false'
+
+    strategy:
+      matrix:
+        # Build django poll app
+        djangoPollApp:
+          sourceWorkingDirectory: '$(Build.SourcesDirectory)\django-poll-app\application' # Source Working Directory for container
+          dockerFilePath: '.\Dockerfile' # Dockerfile File Path within sourceWorkingDirectory
+          dockerSourceWorkingDirectory: '.' # which directory to use e.g. once you are in sourceWorkingDirectory provide a working directory for the dockerfile
+          imageTagName: 'django-poll-app' # image tag name e.g. imageTagName:imageTag
+          imageTag: '$(Build.BuildId)' # image tag e.g. imageTagName:imageTag
+
+        # Build django poll app for nano
+        djangoPollAppNano:
+          sourceWorkingDirectory: '$(Build.SourcesDirectory)\django-poll-app\application' # Source Working Directory for container
+          dockerFilePath: '.\nanoserver.Dockerfile' # Dockerfile File Path within sourceWorkingDirectory
+          dockerSourceWorkingDirectory: '.' # which directory to use e.g. once you are in sourceWorkingDirectory provide a working directory for the dockerfile
+          imageTagName: 'django-poll-app' # image tag name e.g. imageTagName:imageTag
+          imageTag: '$(Build.BuildId)' # image tag e.g. imageTagName:imageTag
+          
+        # Build eshop-mvc-modernized-app
+        eshopMvcModernizedApp:
+          sourceWorkingDirectory: '$(Build.SourcesDirectory)\eshop-mvc-modernized-app\application' # Source Working Directory for container
+          dockerFilePath: '.\eshop.Dockerfile' # Dockerfile File Path within sourceWorkingDirectory
+          dockerSourceWorkingDirectory: '.' # which directory to use e.g. once you are in sourceWorkingDirectory provide a working directory for the dockerfile
+          imageTagName: 'eshop-mvc-modernized-app' # image tag name e.g. imageTagName:imageTag
+          imageTag: '$(Build.BuildId)' # image tag e.g. imageTagName:imageTag
+        
+        # Build ticket-desk
+        ticketDesk:
+          sourceWorkingDirectory: '$(Build.SourcesDirectory)\ticket-desk\application' # Source Working Directory for container
+          dockerFilePath: '.\ticketDesk.Dockerfile' # Dockerfile File Path within sourceWorkingDirectory
+          dockerSourceWorkingDirectory: '.' # which directory to use e.g. once you are in sourceWorkingDirectory provide a working directory for the dockerfile
+          imageTagName: 'eshop-mvc-modernized-app' # image tag name e.g. imageTagName:imageTag
+          imageTag: '$(Build.BuildId)' # image tag e.g. imageTagName:imageTag
+
+    pool:
+      # Use microsoft-hosted agent
+      vmImage: 'windows-2019'
+    workspace:
+      clean: all
+    steps:
+      # Checkout repo
+      - checkout: self
+      # Add Component Governance Step
+      - task: ComponentGovernanceComponentDetection@0
+      - powershell: |
+          Push-Location '$(sourceWorkingDirectory)'
+
+          Write-Host "Building $(imageTagName):$(imageTag)"
+
+          Write-Host "docker build -f ""$(dockerFilePath)"" -t ""$(imageTagName):$(imageTag)"" ""$(dockerSourceWorkingDirectory)"""
+
+          docker build -f "$(dockerFilePath)" -t "$(imageTagName):$(imageTag)" "$(dockerSourceWorkingDirectory)"
+
+          Write-Host "Build complete for $(imageTagName):$(imageTag)"
+
+          # Build Complete
+          Pop-Location
