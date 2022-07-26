@@ -3,9 +3,9 @@ trigger: none
 
 parameters:
 - name: timeoutInMinutes
-  displayName: Job Timeout in Minutes (default 240)
+  displayName: Job Timeout in Minutes (default 60)
   type: number
-  default: 240
+  default: 60
 
 stages:
 - stage: Build_Images
@@ -59,6 +59,9 @@ stages:
       - checkout: self
       # Add Component Governance Step
       - task: ComponentGovernanceComponentDetection@0
+        displayName: 'Component Detection'
+        inputs:
+          failOnAlert: true
       - powershell: |
           Push-Location '$(sourceWorkingDirectory)'
 
