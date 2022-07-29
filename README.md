@@ -2,7 +2,7 @@
 Windows Container Demos is a collection of demo apps to show how you can modernize Windows Server applications with Windows containers and then deploy and run on Azure Kubernetes Service (AKS).
 
 ## List of Demo Apps:
-1. **TicketDesk**: A legacy backoffice web apps (ASP.NET MVC), running on Windows Server 2019 Server Core containers.
+1. **TicketDesk**: A legacy backoffice web apps (ASP.NET MVC) from https://github.com/NullDesk/ticketdesk/tree/ticketdesk-v2.1/TicketDesk-2, running on Windows Server 2019 Server Core containers.
 
 2. **eShop**: A legacy backoffice web app (ASP.NET WebForms and MVC), a sample from .NET architecture: https://github.com/dotnet-architecture/eShopModernizing, running on Windows Server 2019 Server Core containers.
 
