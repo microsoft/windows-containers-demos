@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/windows-cssc/python3.7.2nanoserver:ltsc2022
+FROM mcr.microsoft.com/windows-cssc/python3.7.2nanoserver:ltsc2019
 
 RUN md C:\windows-containers-demos\django-poll-app\application
 WORKDIR C:/windows-containers-demos/django-poll-app/application
