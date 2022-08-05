@@ -1,3 +1,5 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
 $ErrorActionPreference = "Stop"
 
 Write-Output "Configuring IIS with authentication."

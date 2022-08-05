@@ -1,3 +1,5 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
 #In this case we are using static file share.
 apiVersion: v1
 kind: PersistentVolume
@@ -10,7 +12,7 @@ spec:
     - ReadWriteMany
   azureFile:
     secretName: azure-secret-fshare
-    shareName: eshopfileshare05619
+    shareName: <file-share-name>
     readOnly: false
   mountOptions:
   - dir_mode=0777
