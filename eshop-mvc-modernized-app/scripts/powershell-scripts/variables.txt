@@ -1,35 +1,29 @@
-subscriptionName="97bc8f84-568f-4b16-a365-14ffad******" # subscriptionName or subscriptionID
-resourceGroupName="aks-rg-eshop-demo"
-resourceGroupLocaltion="East US"
+subscriptionName="<subscriptionID>"
+resourceGroupName="<ResourceGroupName>"
+resourceGroupLocaltion="<Location>"
 # CONTAINER REGISTERY DETAILS
-acrRegistryName="eshopdemoacr070123"
+acrRegistryName="<ACR name>"
 # STORAGE ACCOUNT FILE SHARE DETAILS
-aksStorageAccountname="eshopsg09873"
-aksFileSharename="eshopfs045793"
-aksStorageAccountSKU="Standard_LRS"
+aksStorageAccountname="<StorageAccountname>"
+aksFileSharename="<FileSharename>"
+aksStorageAccountSKU="<StorageAccountSKU>"
 # AZURE KEY VAULT DETAILS
-akvName="eshopkeyvault1201w3"
+akvName="<keyvault-name>"
 # AZURE CLUSTER DETAILS
-clusterName="eshop-clus-win"
-# creating AKS Cluster in different resource group
-aksResourceGroupName="eshop-clus-rg-win"
-workerNodeCount=1
+clusterName="<cluster-name>"
+workerNodeCount="<NodeCount>"
 kubernetesVersion="1.21.9"
 networkPlugin="azure"
-loadBalancerSKU="Standard"
-nodeVMSize="Standard_B2s"
-winNodePoolName="npwin"
-winNodeVMSize="Standard_DS2_v2"
-winWorkerNodeCount=2
+loadBalancerSKU="<loadBalancerSKU>"
+nodeVMSize="<nodeVMSize>"
+winNodePoolName="<winNodePoolName>"
+winNodeVMSize="<winNodeVMSize>"
+winWorkerNodeCount="<winWorkerNodeCount>"
 enableAutoScaler=True
-nodeMinCount=1
-nodeMaxCount=4
+nodeMinCount=<nodeMinCount>
+nodeMaxCount=<nodeMaxCount>
 enableMonitoring=True
-serverAppId="91d153ca-bf0f-4f5c-85d4-77a0a2b306fe"
-serverAppSecret="JlQ8Q~rtDinGsE1_NwX.TPN5ee~A-v9kdSRFea~x"
-clientAppId="98463c1d-8f66-44d9-ac05-e2991a651553"
-server="click2cloud.net"
-sqlServerName="winaksserver"
-sqlServerAdminUser="test"
-sqlServerAdminUserPassword="Root#123"
-sqlDatabaseName="eShopPorted"
+sqlServerName="<sqlServerName>"
+sqlServerAdminUser="<sqlServerAdminUser>"
+sqlServerAdminUserPassword="<sqlServerAdminUserPassword>"
+sqlDatabaseName="<sqlDatabaseName>"

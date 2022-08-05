@@ -20,8 +20,7 @@ we are containerizing the .NET Framework web apps with Windows Containers and Do
 - Azure Storage Account (file share,blob storage)
 - Azure monitoring (for logging and debugging purpose)
 - Azure defender and security tool (for security purpose and scanning)	
-- Network Policy for CNI- Calico 
-- Azure Active Directory (AAD)
+- Network Policy for CNI- Calico
 - Cluster Auto Scaler	
 - Cluster Auto Upgrade
 
@@ -38,10 +37,10 @@ Figure below shows the containerized eShop legacy web application and deployment
 This is the docker file
 
 ```
-FROM mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2019
+FROM mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2019  
 
 # Install Chocolatey
-RUN @powershell -NoProfile -ExecutionPolicy Bypass -Command "$env:ChocolateyUseWindowsCompression='false'; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"  
+RUN @powershell -NoProfile -ExecutionPolicy Bypass -Command "$env:ChocolateyUseWindowsCompression='false'; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
 
 # Copy files
 RUN md c:\build
@@ -49,19 +48,17 @@ WORKDIR c:/build
 COPY . c:/build
 
 # Install build tools
+RUN powershell Invoke-WebRequest https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile Nuget.exe
 RUN powershell add-windowsfeature web-asp-net45 \
-    && choco install microsoft-build-tools -y --allow-empty-checksums -version 140.23107.10 \
+    && choco install microsoft-build-tools -y --allow-empty-checksums -version 14.0.23107.10 \
     && choco install dotnet4.6-targetpack --allow-empty-checksums -y \
-    && nuget install MSBuild.Microsoft.VisualStudio.Web.targets -Version 14.0.0.3\
+    && nuget install MSBuild.Microsoft.VisualStudio.Web.targets -Version 14.0.0.3 \
     && nuget install WebConfigTransformRunner -Version 1.0.0.1
 
-# Delete existing files in wwwroot
 RUN powershell remove-item C:\inetpub\wwwroot\iisstart.*
 
-# Restore packages, build, copy
 RUN xcopy c:\build\src\eShopModernizedMVC\* c:\inetpub\wwwroot /s
 
-# Ensure container doesn't exit
 ENTRYPOINT powershell .\Startup
 
 ```
@@ -103,15 +100,6 @@ C:\windows-containers\demo-apps\EshopMVCModernized-App\scripts\powershell-script
 ```
 *Implementing blob storage from code side*
 
-## Implementing Azure Active Directory Applications
-For integrating AAD with Azure Kubernetes Service, we need to create a server and client app, which will be used to authenticate the users connecting to AKS through AAD.
-This is the authentication part. 
-For the authorization part, it will be managed by Role and Role Binding Kubernetes objects which is further explained.
-```
-C:\windows-containers\demo-apps\EshopMVCModernized-App\scripts\powershell-scripts\create-ad-apps.ps1
-```
-After creation of AAD applications you will see the Server App ID, Server App Secret, Client App ID on powershell console, you have to update these values in Variables.txt file before creating Kubernetes Cluster.
-
 ## Create Azure AKS Cluster
 This script will create AKS and add a window's node pool which enables Cluster Autoscaling, Cluster Auto-Upgrade, Azure Monitor, Calico as a network Policy, Application Gateway to be used as the ingress of an AKS cluster.
 ```
@@ -123,13 +111,8 @@ Now Connect to AKS cluster as admin using command on connect on Portal
 ```
 az aks get-credentials --resource-group=$aksResourceGroupName --name=$clusterName --admin 
 ```
-then Run command kubectl get nodes ,where we can see user don't have access to cluster so
-Apply role ,role binding for accessing cluster which is Authorization part for AAD 
-```
-cd C:\windows-containers\demo-apps\EshopMVCModernized-App\scripts\deployment-scripts\role-binding-mainfest-files 
-kubectl apply -f .
-```
-then You can access nodes, pods etc.
+
+ You can access nodes, pods etc.
 
 ## Create Azure SQL database
 ```
@@ -162,7 +145,7 @@ Again Back to SSMS . Run insert database SQL Query,
 insertdata.sql
 ```
 ## Create Azure Key Vault 
-Cluster can access this key-vault secrets and certificate, save secrets and certificate in key vault, secrets containing connection string of SQL Server database and storage account connection string.
+Cluster can access this key-vault secrets, save secrets in key vault, secrets containing connection string of SQL Server database and storage account connection string.
 ```
 C:\windows-containers\demo-apps\EshopMVCModernized-App\scripts\powershell-scripts\create-key-vault.ps1
 ```
@@ -170,21 +153,20 @@ Assign access policy for AKS Cluster managed identity.
 
 open an azure portal and perform the following steps: -
 - Click on Azure-Key-Vault, go to the Access Policies and click on Add Access policy 
-- Select Get from dropdown for secrets 
-- Select Get from dropdown for certificate permission
+- Select Get from dropdown for secrets
 - Then click on Select Principle and search for cluster name, agent pool and then click on select
 - click on ADD button 
 - At last, after adding policy click on save button. 
 
-Now Create database secret, certificate secret and storage connection secret using CLI or manually on portal.
+Now Create database secret, and storage connection secret using CLI or manually on portal.
 
 On Powershell
 ```
 $keyVaultName = "<Azure-Key-Vault-Name>"
 $secret1Name = "CatalogDBContext"
 $secret2Name = "StorageConnectionString"
-az keyvault secret set --name $secret1Name --value "DataSource=winaksserver.database.windows.net;UserId=test;Password=Root#123;InitialCatalog=eShopPorted " –-vault-name $keyVaultName
-az keyvault secret set --name $secret2Name --value "DataSource=storageaccountconnectionstring" –-vault-name $keyVaultName
+az keyvault secret set --name $secret1Name --value "DataSource=<sql-server-database-connection-string>" –-vault-name $keyVaultName
+az keyvault secret set --name $secret2Name --value "DataSource=<storage-account-connection-string>" –-vault-name $keyVaultName
 ```
 
 ## Create Azure File Share Secrets
