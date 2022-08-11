@@ -1,3 +1,5 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,7 +18,7 @@ spec:
         "kubernetes.io/os": windows
       containers:
       - name: ticket-help-center
-        image: mywinriges0912.azurecr.io/ticketdeskcenter:v1.01
+        image: <image-name>
         ports:
         - containerPort: 80
         env:

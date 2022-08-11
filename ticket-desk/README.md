@@ -17,11 +17,10 @@ We are containerizing the .NET Framework WebApps with Windows Containers and Doc
 - Azure Container Registry (ACR)	
 - Azure key vaults (database secret,StorageConnectionString)	
 - Azure SQL
-- Azure Storage Account (file share,blob storage)
+- Azure Storage Account (file share)
 - Azure monitoring (for logging and debugging purpose)
 - Azure defender and security tool (for security purpose and scanning)	
 - Network Policy for CNI- Calico 
-- Azure Active Directory (AAD)	
 - Cluster Auto Scaler	
 - Cluster Auto Upgrade
 
@@ -59,14 +58,12 @@ WORKDIR c:/build
 COPY . c:/build
 
 # Restore packages, build, copy
-RUN nuget restore 
+RUN nuget restore
+RUN powershell Invoke-WebRequest https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile c:/build/.nuget/nuget.exe
 RUN C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe /p:Platform="Any CPU" /p:VisualStudioVersion=12.0 /p:VSToolsPath=c:\MSBuild.Microsoft.VisualStudio.Web.targets.14.0.0.3\tools\VSToolsPath TicketDesk2.sln
 RUN xcopy c:\build\TicketDesk.Web.Client\* c:\inetpub\wwwroot /s
 
-#RUN powershell .\add_certificate_IIS
-
 ENTRYPOINT powershell .\Startup
-
 
 ```
 We are using Windows Server Core Image and installing necessary tools for building our project.
@@ -154,7 +151,7 @@ Open Powershell , login to Azure using command "az login".
 #### So we have created powershell script to create resources on Azure. Before running powershell script first we have to provide paramters value in *variable.txt* file.
 
 
-The first service we are going to create is Azure Container Registry (ACR). It is used for storing application docker image, so ,  for creating ACR run following script
+The first service we are going to create is Azure Container Registry (ACR). It is used for storing application docker image, so , for creating ACR run following script
 
 
 ```
@@ -172,22 +169,12 @@ docker push <acr-container-registry>/ticketdesk:latest
 
 Now, enable Microsoft Defender for container registries from the portal which includes a vulnerability scanner to scan the images in Azure Container Registry registries and provide deeper visibility into your images vulnerabilities.
 
-## Create file share and blob storage
+## Create file share 
 File Share will store Application's Raw data and Blob storage will store Application's Images.
 
 ```
 D:\windows-containers-demos\ticket-desk\scripts\powershell-scripts\create-file-share.ps1
 ```
-
-## Implementing Azure Active Directory Applications
-For integrating AAD with Azure Kubernetes Service, we need to create a server and client app, which will be used to authenticate the users connecting to AKS through AAD.
-This is the authentication part. 
-For the authorization part, it will be managed by Role and Role Binding Kubernetes objects which is further explained.
-```
-D:\windows-containers-demos\ticket-desk\scripts\powershell-scripts\create-ad-apps.ps1
-```
-
-After creation of AAD apllications you will see the _Server App ID_, _Server App Secret_, _Client App ID_ on powershell console, you have to update these values in _Variables.txt_ file before creating Kubernetes Cluster
 
 ## Create Azure AKS Cluster
 This script will create AKS and add a window's node pool which enables Cluster Autoscaling, Cluster Auto-Upgrade, Azure Monitor, Calico as a network Policy, Application Gateway to be used as the ingress of an AKS cluster.
@@ -200,14 +187,7 @@ We need to connect to AKS in order to run kubectl commands against the new clust
 ```
 az aks get-credentials --resource-group=$aksResourceGroupName --name=$clusterName --admin 
 ```
-
-then let’s create the Role which will define access to certain resources. For example, only read information from pods.
-Apply role ,role binding for accessing cluster which is Authorization part for AAD , update _Name_ parameter value in yaml files before applying
-```
-cd D:\windows-containers-demos\ticket-desk\scripts\deployment-scripts\role-binding-mainfest-files
-kubectl apply -f .
-```
-then You can access nodes, pods etc.
+Here, You can access nodes, pods etc.
 
 ## Create Azure SQL database
 ```
@@ -233,7 +213,6 @@ Assign access policy for AKS Cluster managed identity.
 Open the Azure portal and perform the following steps: -
 - Click on Azure-Key-Vault, go to the Access Policies and click on Add Access policy. 
 - Select Get from dropdown for secrets .
-- Select Get from dropdown for certificate permission.
 - Then click on Select Principle and search for "<clustername>-agentpool" and then click on select
 - Click on ADD button. 
 - At last, after adding policy click on save button. 

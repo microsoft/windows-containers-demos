@@ -1,3 +1,5 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
 .\Set-WebConfigSettings.ps1 -webConfig c:\inetpub\wwwroot\Web.config
 #.\add_certificate_IIS.ps1
 #C:\ServiceMonitor.exe w3svc
