@@ -158,7 +158,7 @@ To run the application locally on container, execute the below command:
 docker run -d -p 4000:8000 --name <container_name> -e db-host= <host> -e db-name= <databasename> -e db-user= <username> -e db-password= <password> -e db-port= <database_port> <acr-container-registry>/<image_name:tag>
 ```
 
-##Create Node Pool
+## Create Node Pool 
 Before moving forward to create the secrets, we need to create the node pool manually from Azure portal. 
 Steps to create the node pool are as follows:
     
