@@ -1,8 +1,8 @@
 ## PollApp - Modernizing Python web application with Nano server and Azure Cloud
-This repository contains a sample of Django-poll web application and how to modernize it using Windows Container(Nano-server) and Azure Cloud.
+This repository contains a sample of Django-poll web application and steps to modernize it using Windows Container(Nano-server) and Azure Cloud.
 
 ## Overview
-Windows Container should be used as a way to improve deployments to production, development, and test environments of existing Python applications based on different framework technologies and
+Windows Container should be used as a way to improve deployments to production, development and test environment of existing Python applications based on different framework technologies and
 deploying the Python application to the Azure Kubernetes Service.
 
 ## Goals
@@ -26,11 +26,11 @@ To containerize the Python-Django web application using Windows Container(Nano-s
 - Azure CI/CD pipeline
 
 ## Architecture
-Following figure shows the simple scenario of the original Python web application.
+Below figure shows the simple scenario of the original Python web application.
 
 ![image](images/overview.png)
 
-Following figure shows the containerized Django-PollApp web application and deployment to a Kubernetes cluster.
+Below figure shows the containerized Django-PollApp web application and deployment to a Kubernetes cluster.
 
 ![image](images/Architecture.png)
 
@@ -52,7 +52,7 @@ EXPOSE 8000
 CMD python manage.py runserver 0.0.0.0:8000
 ```
 
-Here, we have used Microsoft's Nano server image with python as the base image and installing requirements to build the application.
+Here, we have used Microsoft's Nano server image with Python as a base image and installing requirements to build the application.
 
 ## Clone the repository
 
@@ -67,13 +67,13 @@ cd D:\windows-containers-demos\django-poll-app\application
 docker build -t poll_app -f .\Dockerfile .
 ```
 ## Creating Azure Services
-First create Azure Container Registry(ACR).
+Initially, we need to create Azure Container Registry(ACR):
 
-Open Powershell , login to Azure using command "az login".
+Open Powershell, login to Azure using the command *"az login"*.
 
-We have created powershell scripts to create resources on Azure. Before running these script, we need to specify paramters values in *variable.txt* file.
+We have created powershell scripts to create resources on Azure. Before running these script, we need to specify parameter values in *variable.txt* file.
 
-ACR is used for storing application docker image. Follow the below path to get the script:
+ACR is used to store docker image of the application. Follow the below path to get the script:
 
 _D:\windows-containers-demos\django-poll-app\scripts\powershell-scripts\create-acr.ps1_
 
@@ -83,13 +83,14 @@ Run above script using:
 .\create-acr.ps1
 ```
 
-## Push the custom Docker image into ACR
+## Push the custom Docker image to ACR
 
 ```
 docker login <acr-container-registry>
 docker tag poll_app:latest <acr-container-registry>/poll_app:latest
 docker push <acr-container-registry>/poll_app:latest
 ```
+Now, enable Microsoft Defender for container registries from the portal which includes a vulnerability scanner to scan the images in Azure Container Registry registries and provide deeper visibility into your images vulnerabilities.
 
 ## Create file share
 File Share stores the raw data of application. Follow the below path to get the script:
@@ -102,7 +103,7 @@ Run above script using:
 ```
 
 ## Create Azure AKS Cluster
-Below script creates AKS and add window's node pool that enables Cluster Autoscaling, Cluster Auto-Upgrade, Azure Monitor, Calico as a network Policy, Application Gateway to be used as the ingress of AKS cluster.
+Below script creates AKS and adds windows node pool that enables Cluster Autoscaling, Cluster Auto-Upgrade, Azure Monitor, Calico as a network Policy, Application Gateway to be used as the ingress of AKS cluster.
 
 _D:\windows-containers-demos\django-poll-app\scripts\powershell-scripts\create-aks.ps1_
 
@@ -111,11 +112,27 @@ Run above script using:
 .\create-aks.ps1
 ```
 
-Need to connect with AKS in order to run kubectl commands for the new cluster.
+Connect with AKS to run kubectl commands for the new cluster.
 
 ```
-az aks get-credentials --resource-group=$aksResourceGroupName --name=$clusterName
+az aks get-credentials --resource-group=$aksResourceGroupName --name=$clusterName --admin
 ```
+
+## Create Azure Key Vault
+Cluster can access this key-vault secrets and certificate that contains connection string of MySQL server database.
+```
+D:\windows-containers-demos\django-poll-app\scripts\powershell-scripts\create-key-vault.ps1
+```
+Assign access policy to AKS Cluster managed identity.
+
+Login to Azure portal and perform the following steps: -
+- Click on Azure Key-Vault, go to Access Policies and click on Add Access policy.
+- Select "Get" from the dropdown for secrets .
+- Click on Select Principle and search for "<clustername>-agentpool" and click select
+- Click on ADD button.
+- Save the changes made.
+
+Save database connection string in Azure Key Vault. Create database secret manually on the portal. Django poll-app needs connection strings like: *DBName, DBUser, DBPassword, DBHost and DBPort* of the database to be stored in key vault secrets.
 
 ## Create Azure MySQL database
 ```
@@ -125,49 +142,66 @@ Run above script using:
 ```
 .\create-mysql-server-database.ps1
 ```
-Run the below commands in your project directory in order to create database table:
+Add the database connection string (db-host, db-name, db-user, db-password and db-port) in system environment variables. Once added, restart the powershell as administrator and perform further steps.
+
+Run the below commands to create the database table:
 ```
 python manage.py makemigrations
 python manage.py migrate
 ```
-For running the application use below command: 
+To use admin panel you need to create superuser using the below command:
+
+```python manage.py createsuperuser```
+
+To run the application locally on container, execute the below command:
 ```
-python manage.py runserver
+docker run -d -p 4000:8000 --name <container_name> -e db-host= <host> -e db-name= <databasename> -e db-user= <username> -e db-password= <password> -e db-port= <database_port> <acr-container-registry>/<image_name:tag>
 ```
-To use admin panel you need to create superuser using this command:
+
+##Create Node Pool
+Before moving forward to create the secrets, we need to create the node pool manually from Azure portal. 
+Steps to create the node pool are as follows:
+    
+    1. Login to Azure portal
+    2. Search for Kubernetes services and go to Node pools
+    3. Add a new node pool with OS type: Windows,
+                                Node size: B2ms,
+                                Scale method: Manual,
+                                Node count range: 3
+    4. Click Review+Create and then, Create.
+
+Once the Node pool gets created successfully, proceed further with creating the secrets.
+
+## Create Azure File Share Secrets
+Kubernetes cluster will use this secret for mounting file share as volume in application deployment.
 ```
- python manage.py createsuperuser 
+D:\windows-containers-demos\django-poll-app\scripts\powershell-scripts\aks-file-share-secrets.ps1
+```
+Run above script using:
+```
+.\aks-file-share-secrets.ps1
+```
+check Secrets
+```
+kubectl get secrets
 ```
 
 ## Install CSI Provider
-We are installing CSI provider using helm chart, by default CSI secret provider install for linux nodes we have to install it for our window's node enable windows parameters.
+We are installing CSI provider using helm chart. By default, CSI secret provider gets installed for linux nodes hence, we need to install it for windows node to enable windows parameters.
 ```
 D:\windows-containers-demos\django-poll-app\scripts\powershell-scripts\deploy-csi-akv-provider.ps1
 ```
-Check secret provider pods on window's node:
+Run above script using:
+```
+.\deploy-csi-akv-provider.ps1
+```
+Check secret provider pods on Windows node:
 ```
 kubectl get pods
 ```
 
-## Create Azure Key Vault
-Cluster can access this key-vault secrets and certificate, that contains connection string of MySQL server database.
-```
-D:\windows-containers-demos\django-poll-app\scripts\powershell-scripts\create-key-vault.ps1
-```
-Assign access policy for AKS Cluster managed identity.
-
-Open the Azure portal and perform the following steps: -
-- Click on Azure-Key-Vault, go to the Access Policies and click on Add Access policy.
-- Select Get from dropdown for secrets .
-- Select Get from dropdown for certificate permission.
-- Then click on Select Principle and search for "<clustername>-agentpool" and then click on select
-- Click on ADD button.
-- At last, after adding policy click on save button.
-
-Save database connection string in Azure Key Vault. Create database secret manually on portal.  Django poll-app application need connection strings of database.It stored the connection string into key vault secrets.
-
 ## Implementing Azure Pipelines
-Azure Pipelines automatically builds and tests code projects to make them available to others. It works with just about any language or project type. Azure Pipelines combines continuous integration (CI) and continuous delivery (CD) to test and build your code and ship it to any target.
+Azure Pipeline automatically builds and tests code projects to make them available to others. It works with just about any language or project type. Azure Pipelines combines continuous integration (CI) and continuous delivery (CD) to test and build your code and ship it to any target.
 
 To use Azure Pipelines, you need:
 - An organization in Azure DevOps.
@@ -191,7 +225,7 @@ kubectl get services
 
 ![image](images/login.png)
 
-![image](images/afterlogin.png)
+![image](images/user%20poll%20list.png)
 
 *You can inspect the container's file system and check the file share mounting secrets and key vault secrets.*
 *You can also monitor cluster from azure portal*.

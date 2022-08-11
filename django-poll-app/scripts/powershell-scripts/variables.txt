@@ -1,35 +1,35 @@
-subscriptionName="7302ac3b-2ad4-4e08-9aeb-03bfc5******" # subscriptionName or subscriptionID
-resourceGroupName="python-pollapp-rg"
-resourceGroupLocaltion="East US"
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+subscriptionName="<subscriptionID>" # subscriptionID
+resourceGroupName="<ResourceGroupName>"
+resourceGroupLocaltion="<Location>"
 # CONTAINER REGISTERY DETAILS
-acrRegistryName="pollsacr012"
+acrRegistryName="<ACR name>"
 # STORAGE ACCOUNT FILE SHARE DETAILS
-aksStorageAccountname="pollsapp012"
-aksFileSharename="pollsappfs012"
-aksStorageAccountSKU="Standard_LRS"
+aksStorageAccountname="<StorageAccountname>"
+aksFileSharename="<FileSharename>"
+aksStorageAccountSKU="<StorageAccountSKU>"  
 # AZURE KEY VAULT DETAILS
-akvName="pollappskv0123"
+akvName="<keyvault-name>"
 # AZURE CLUSTER DETAILS
-clusterName="poll-clust-demo12"
-# CREATING AKS CLUSTER IN DIFFERENT RESOURCE GROUP
-aksResourceGroupName="aks-polls-cluster-rg"
-workerNodeCount=1
+clusterName="<cluster-name>"
+# CREATING AKS CLUSTER
+workerNodeCount=<NodeCount>
 kubernetesVersion="1.21.9"
 networkPlugin="azure"
-loadBalancerSKU="Standard"
-nodeVMSize="Standard_B2s"
-winNodePoolName="npwin"
-winNodeVMSize="Standard_DS2_v2"
-winWorkerNodeCount=3
+loadBalancerSKU="<loadBalancerSKU>"
+nodeVMSize="<nodeVMSize>"
+winNodePoolName="<winNodePoolName>"
+winNodeVMSize="<winNodeVMSize>"
+winWorkerNodeCount=<winWorkerNodeCount>
 enableAutoScaler=True
-nodeMinCount=1
-nodeMaxCount=4
+nodeMinCount=<nodeMinCount>
+nodeMaxCount=<nodeMaxCount>
 enableMonitoring=True
-server="click2cloud.net"
 # CREATING MYSQL SERVER 
-mysqlServerName="poll-server"
-mysqlServerAdminUser="user"
-mysqlServerAdminUserPassword="Root#123"
-mysqlDatabaseName="polldatab"
-mysqlskuname="B_Gen5_1"
-mysqlstoragesize= "5120"
+mysqlServerName="<mysqlServerName>"
+mysqlServerAdminUser="<mysqlServerAdminUser>"
+mysqlServerAdminUserPassword="<mysqlServerAdminUserPassword>"
+mysqlDatabaseName="<mysqlDatabaseName>"
+mysqlskuname="<mysqlskuname>"
+mysqlstoragesize= "<mysqlstoragesize>"
