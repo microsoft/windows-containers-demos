@@ -226,11 +226,11 @@ $secret1Name = "TicketDeskSecurityConnectionString"
 $secret2Name = "TicketDeskEntities"
 $secret3Name = "ElmahLog"
 
-az keyvault secret set --name $secret1Name --value "Data Source=<your sql server host>;Initial Catalog=<your database name>;UserId=<your sql server username>;Password=<Your SQl server password>" –-vault-name $keyVaultName
+az keyvault secret set --name $secret1Name --value "Data Source=<your sql server host>;Initial Catalog=<your database name>;User Id=<your sql server username>;Password=<Your SQl server password>" –-vault-name $keyVaultName
 
-az keyvault secret set --name $secret2Name --value "metadata=res://*/Models.TicketDeskEntities.csdl|res://*/Models.TicketDeskEntities.ssdl|res://*/Models.TicketDeskEntities.msl;provider=System.Data.SqlClient;provider connection string='Data Source=<your sql server host>;Initial Catalog=<your database name>;UserId=<your sql server username>;Password=<Your SQl server password>'" –-vault-name $keyVaultName 
+az keyvault secret set --name $secret2Name --value "metadata=res://*/Models.TicketDeskEntities.csdl|res://*/Models.TicketDeskEntities.ssdl|res://*/Models.TicketDeskEntities.msl;provider=System.Data.SqlClient;provider connection string='Data Source=<your sql server host>;Initial Catalog=<your database name>;User Id=<your sql server username>;Password=<Your SQl server password>'" –-vault-name $keyVaultName 
 
-az keyvault secret set --name $secret3Name --value "Data Source=<your sql server host>;Initial Catalog=<your database name>;UserId=<your sql server username>;Password=<Your SQl server password>" –-vault-name $keyVaultName
+az keyvault secret set --name $secret3Name --value "Data Source=<your sql server host>;Initial Catalog=<your database name>;User Id=<your sql server username>;Password=<Your SQl server password>" –-vault-name $keyVaultName
 ```
 
 ## Create Azure File Share Secrets
