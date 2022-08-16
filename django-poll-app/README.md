@@ -45,6 +45,7 @@ COPY . C:/windows-containers-demos/django-poll-app/application
 
 RUN python -m pip install --upgrade pip --user --no-warn-script-location
 RUN pip install -r requirements.txt
+
 RUN cmd python manage.py makemigrations
 
 EXPOSE 8000
