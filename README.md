@@ -9,9 +9,9 @@ Windows Container Demos is a collection of demo apps to show how you can moderni
 3. **Django poll app**: A Python app modeled after this Django-Poll-App https://github.com/devmahmud/Django-Poll-App, running on Windows Server 2019 Nano Server containers.
 
 Under each folder of the apps, you can find the following:
-- An overivew of the app
+- An overview of the app
 - A tutorial that includes architecture diagrams and documentations
-- A video that illusrates the moderization steps
+- A video that illustrates the modernization steps
 - The source code
 
 ## Demostrated Azure Services:
