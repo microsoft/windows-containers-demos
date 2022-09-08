@@ -9,11 +9,12 @@ WORKDIR c:/build
 COPY . c:/build
 
 # Install build tools
+RUN powershell Invoke-WebRequest https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile Nuget.exe
 RUN powershell add-windowsfeature web-asp-net45 \
     && choco install microsoft-build-tools -y --allow-empty-checksums -version 14.0.23107.10 \
     && choco install dotnet4.6-targetpack --allow-empty-checksums -y \
-    && c:\build\nuget.exe install MSBuild.Microsoft.VisualStudio.Web.targets -Version 14.0.0.3 \
-    && c:\build\nuget.exe install WebConfigTransformRunner -Version 1.0.0.1
+    && nuget install MSBuild.Microsoft.VisualStudio.Web.targets -Version 14.0.0.3 \
+    && nuget install WebConfigTransformRunner -Version 1.0.0.1
 
 RUN powershell remove-item C:\inetpub\wwwroot\iisstart.*
 

@@ -1,3 +1,5 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,7 +18,7 @@ spec:
         "kubernetes.io/os": windows
       containers:
       - name: eshop-app-deployment
-        image: eshopregistry120121.azurecr.io/eshop11:v2 
+        image: <image-name>
         ports:
         - containerPort: 80
         env:

@@ -193,6 +193,11 @@ namespace eShopModernizedMVC.Controllers
         {
             item.PictureUri = _imageService.BuildUrlImage(item);
         }
+
+        public ActionResult logout()
+        {
+            return RedirectToAction("LogIn", "CatalogRegisterUser");
+        }
     }
 }
 

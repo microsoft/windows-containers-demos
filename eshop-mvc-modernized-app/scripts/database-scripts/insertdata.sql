@@ -1,4 +1,5 @@
-USE [eShopPorted]
+/* Copyright (c) Microsoft Corporation.
+   Licensed under the MIT license. */
 GO
 INSERT INTO [dbo].[CatalogBrand]([Brand])VALUES ('Azure') 
 INSERT INTO [dbo].[CatalogBrand]([Brand])VALUES ('.NET')
