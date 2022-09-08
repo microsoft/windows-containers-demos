@@ -1,35 +1,35 @@
-# Copyright (c) Microsoft Corporation.
-# Licensed under the MIT license.
-subscriptionName="<subscriptionID>" # subscriptionID
-resourceGroupName="<ResourceGroupName>"
-resourceGroupLocaltion="<Location>"
+subscriptionName="7302ac3b-2ad4-4e08-9aeb-03bfc5******" # subscriptionName or subscriptionID
+resourceGroupName="python-pollapp-rg"
+resourceGroupLocaltion="East US"
 # CONTAINER REGISTERY DETAILS
-acrRegistryName="<ACR name>"
+acrRegistryName="pollsacr012"
 # STORAGE ACCOUNT FILE SHARE DETAILS
-aksStorageAccountname="<StorageAccountname>"
-aksFileSharename="<FileSharename>"
-aksStorageAccountSKU="<StorageAccountSKU>"  
+aksStorageAccountname="pollsapp012"
+aksFileSharename="pollsappfs012"
+aksStorageAccountSKU="Standard_LRS"
 # AZURE KEY VAULT DETAILS
-akvName="<keyvault-name>"
+akvName="pollappskv0123"
 # AZURE CLUSTER DETAILS
-clusterName="<cluster-name>"
-# CREATING AKS CLUSTER
-workerNodeCount=<NodeCount>
+clusterName="poll-clust-demo12"
+# CREATING AKS CLUSTER IN DIFFERENT RESOURCE GROUP
+aksResourceGroupName="aks-polls-cluster-rg"
+workerNodeCount=1
 kubernetesVersion="1.21.9"
 networkPlugin="azure"
-loadBalancerSKU="<loadBalancerSKU>"
-nodeVMSize="<nodeVMSize>"
-winNodePoolName="<winNodePoolName>"
-winNodeVMSize="<winNodeVMSize>"
-winWorkerNodeCount=<winWorkerNodeCount>
+loadBalancerSKU="Standard"
+nodeVMSize="Standard_B2s"
+winNodePoolName="npwin"
+winNodeVMSize="Standard_DS2_v2"
+winWorkerNodeCount=3
 enableAutoScaler=True
-nodeMinCount=<nodeMinCount>
-nodeMaxCount=<nodeMaxCount>
+nodeMinCount=1
+nodeMaxCount=4
 enableMonitoring=True
+server="click2cloud.net"
 # CREATING MYSQL SERVER 
-mysqlServerName="<mysqlServerName>"
-mysqlServerAdminUser="<mysqlServerAdminUser>"
-mysqlServerAdminUserPassword="<mysqlServerAdminUserPassword>"
-mysqlDatabaseName="<mysqlDatabaseName>"
-mysqlskuname="<mysqlskuname>"
-mysqlstoragesize= "<mysqlstoragesize>"
+mysqlServerName="poll-server"
+mysqlServerAdminUser="user"
+mysqlServerAdminUserPassword="Root#123"
+mysqlDatabaseName="polldatab"
+mysqlskuname="B_Gen5_1"
+mysqlstoragesize= "5120"

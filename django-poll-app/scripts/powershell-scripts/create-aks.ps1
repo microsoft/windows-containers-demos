@@ -1,6 +1,3 @@
-# Copyright (c) Microsoft Corporation.
-# Licensed under the MIT license.
-
 # this file is used for creating Azure AKS Cluster with windows nodepool
 
 # setting variables from variable file
@@ -13,23 +10,23 @@ $tenantId = (az account show | ConvertFrom-Json).tenantId
 Write-Host "Setting Azure subscription to $subscriptionName"  -ForegroundColor Yellow
 az account set --subscription=$subscriptionName
 
-$aksRgExists = az group exists --name $resourceGroupName
+$aksRgExists = az group exists --name $aksResourceGroupName
 
-Write-Host "$resourceGroupName exists : $aksRgExists"
+Write-Host "$aksResourceGroupName exists : $aksRgExists"
 
 if ($aksRgExists -eq $false) {
 
     # Create resource group name
-    Write-Host "Creating resource group $resourceGroupName in region $resourceGroupLocaltion" -ForegroundColor Yellow
+    Write-Host "Creating resource group $aksResourceGroupName in region $resourceGroupLocaltion" -ForegroundColor Yellow
     az group create `
-        --name=$resourceGroupName `
+        --name=$aksResourceGroupName `
         --location=$resourceGroupLocaltion `
         --output=jsonc
 }
 
 $aks = az aks show `
     --name $clusterName `
-    --resource-group $resourceGroupName `
+    --resource-group $aksResourceGroupName `
     --query name | ConvertFrom-Json
 
 $aksCLusterExists = $aks.Length -gt 0
@@ -37,10 +34,10 @@ $aksCLusterExists = $aks.Length -gt 0
 if ($aksCLusterExists -eq $false) {
 
     # Create AKS cluster
-    Write-Host "Creating AKS cluster $clusterName with resource group $resourceGroupName in region $resourceGroupLocaltion" -ForegroundColor Yellow
+    Write-Host "Creating AKS cluster $clusterName with resource group $aksResourceGroupName in region $resourceGroupLocaltion" -ForegroundColor Yellow
 		
 	az aks create `
-		--resource-group=$resourceGroupName `
+		--resource-group=$aksResourceGroupName `
 		--name=$clusterName `
 		--node-count=$workerNodeCount `
 		--enable-managed-identity `
@@ -55,10 +52,11 @@ if ($aksCLusterExists -eq $false) {
         --min-count=$nodeMinCount `
         --max-count=$nodeMaxCount `
         --network-policy="calico" `
+		--aad-tenant-id=$tenantId `
 		--output=jsonc
 		
 	az aks nodepool add `
-		--resource-group=$resourceGroupName `
+		--resource-group=$aksResourceGroupName `
 		--cluster-name=$clusterName `
 		--os-type="Windows" `
 		--name=$winNodePoolName `
@@ -72,9 +70,16 @@ if ($aksCLusterExists -eq $false) {
 # Get credentials for newly created cluster
 Write-Host "Getting credentials for cluster $clusterName" -ForegroundColor Yellow
 az aks get-credentials `
-    --resource-group=$resourceGroupName `
+    --resource-group=$aksResourceGroupName `
     --name=$clusterName `
 	--admin `
     --overwrite-existing
 
 Write-Host "Successfully created cluster $clusterName with $workerNodeCount node(s)" -ForegroundColor Green
+
+Write-Host "Creating cluster role binding for Kubernetes dashboard" -ForegroundColor Green
+
+kubectl create clusterrolebinding kubernetes-dashboard `
+    -n kube-system `
+    --clusterrole=cluster-admin `
+    --serviceaccount=kube-system:kubernetes-dashboard

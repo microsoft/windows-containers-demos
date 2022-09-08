@@ -1,6 +1,3 @@
-# Copyright (c) Microsoft Corporation.
-# Licensed under the MIT license.
-
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -13,7 +10,7 @@ spec:
     - ReadWriteMany
   azureFile:
     secretName: azure-secret-fshare #file share whill not 110% managed by aks so we need to export or tell the kubernetes what is the secret or storage account key that should be used with that file share :)
-    shareName: <fileshare-name>
+    shareName: pollsappfs012
     readOnly: false
   mountOptions:
   - dir_mode=0777

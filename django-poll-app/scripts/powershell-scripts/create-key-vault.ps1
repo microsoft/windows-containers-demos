@@ -1,6 +1,3 @@
-# Copyright (c) Microsoft Corporation.
-# Licensed under the MIT license.
-
 # This file is used for creating Azure Key Vault
 
 # setting variables from variable file
