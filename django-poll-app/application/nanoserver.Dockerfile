@@ -1,15 +1,11 @@
-FROM vclick2cloud/nanoserver:1.0
+FROM mcr.microsoft.com/windows-cssc/python3.7.2nanoserver:ltsc2019
 
-RUN md c:\windows_container\Django-poll-app\application
+RUN md C:\windows-containers-demos\django-poll-app\application
+WORKDIR C:/windows-containers-demos/django-poll-app/application
+COPY . C:/windows-containers-demos/django-poll-app/application
 
-WORKDIR c:/windows_container/Django-poll-app/application
-
-COPY . c:/windows_container/Django-poll-app/application
-
-RUN python -m pip install --upgrade pip
-
+RUN python -m pip install --upgrade pip --user --no-warn-script-location
 RUN pip install -r requirements.txt
-
 RUN cmd python manage.py makemigrations
 
 EXPOSE 8000
