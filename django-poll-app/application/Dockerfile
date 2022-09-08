@@ -1,13 +1,13 @@
-# Copyright (c) Microsoft Corporation.
-# Licensed under the MIT license.
-
-FROM mcr.microsoft.com/windows-cssc/python3.7.2nanoserver:ltsc2019
+FROM click2cloud/nanoserver:1.0
 
 RUN md C:\windows-containers-demos\django-poll-app\application
-WORKDIR C:/windows-containers-demos/django-poll-app/application
+
+WORKDIR  C:/windows-containers-demos/django-poll-app/application
+
 COPY . C:/windows-containers-demos/django-poll-app/application
 
-RUN python -m pip install --upgrade pip --user --no-warn-script-location
+RUN python -m pip install --upgrade pip
+
 RUN pip install -r requirements.txt
 
 RUN cmd python manage.py makemigrations

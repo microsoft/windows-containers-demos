@@ -1,6 +1,3 @@
-# Copyright (c) Microsoft Corporation.
-# Licensed under the MIT license.
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -19,7 +16,7 @@ spec:
         "kubernetes.io/os": windows
       containers:
       - name: poll
-        image: <image-name>
+        image: pollsacr012.azurecr.io/pollapp:1.0
         ports:
         - containerPort: 8000
         env:
