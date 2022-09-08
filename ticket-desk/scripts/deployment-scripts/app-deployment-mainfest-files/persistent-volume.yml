@@ -1,3 +1,5 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
 #In this case we are using static file share.
 apiVersion: v1
 kind: PersistentVolume
@@ -9,8 +11,8 @@ spec:
   accessModes:
     - ReadWriteMany
   azureFile:
-    secretName: azure-secret-fshare #file share whill not 110% managed by aks so we need to export or tell the kubernetes what is the secret or storage account key that should be used with that file share :)
-    shareName: ticketdeskfshare056 # Azure file share name
+    secretName: azure-secret-fshare
+    shareName: <file-share-name>
     readOnly: false
   mountOptions:
   - dir_mode=0777

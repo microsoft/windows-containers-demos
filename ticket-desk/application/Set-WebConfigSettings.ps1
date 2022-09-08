@@ -1,3 +1,5 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
 param (
     [string]$webConfig = "c:\inetpub\wwwroot\Web.config"
 )

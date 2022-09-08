@@ -1,11 +1,10 @@
 # Overview
 Windows Container Demos is a collection of demo apps to show how you can modernize Windows Server applications with Windows containers and then deploy and run on Azure Kubernetes Service (AKS).
 
-Here is the list of the demo apps:
+Here is the demo app:
 1. TicketDesk
-2. eShop
 
-Under each folder of the apps, you can find out what the app is about, the tutorial to moderize it with Windows containers and deploy to AKS, a video that illusrates the moderization steps and source code.
+Under each folder of the app, you can find out what the app is about, the tutorial to moderize it with Windows containers and deploy to AKS, a video that illusrates the moderization steps and source code.
 
 Please feel free to download and try it out!
 
