@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 # src: https://docs.microsoft.com/en-us/azure/aks/azure-files-volume
 
 # 1) Create Fileshare on Azure Storage Account

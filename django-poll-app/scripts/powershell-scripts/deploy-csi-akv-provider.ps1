@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 Write-Host "Starting deployment of Azure CSI Secret Store Provider using Helm" -ForegroundColor Yellow
 
 helm repo add `
