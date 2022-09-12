@@ -14,7 +14,7 @@ Under each folder of the apps, you can find the following:
 - A video that illustrates the modernization steps
 - The source code
 
-## Demostrated Azure Services:
+## Demonstrated Azure Services:
 - Azure Kubernetes Service (AKS)
 - Azure Container Registry (ACR)
 - Azure key vaults (database secret,StorageConnectionString)
@@ -23,7 +23,6 @@ Under each folder of the apps, you can find the following:
 - Azure monitoring (for logging and debugging purpose)
 - Azure defender and security tool (for security purpose and scanning)
 - Network Policy for CNI- Calico
-- Azure Active Directory (AAD)
 - gMSA on Azure Kubernetes Service
 - Cluster Auto Scaler
 - Cluster Auto Upgrade

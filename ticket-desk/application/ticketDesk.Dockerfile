@@ -19,10 +19,9 @@ WORKDIR c:/build
 COPY . c:/build
 
 # Restore packages, build, copy
-RUN nuget restore 
+RUN nuget restore
+RUN powershell Invoke-WebRequest https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile c:/build/.nuget/nuget.exe
 RUN C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe /p:Platform="Any CPU" /p:VisualStudioVersion=12.0 /p:VSToolsPath=c:\MSBuild.Microsoft.VisualStudio.Web.targets.14.0.0.3\tools\VSToolsPath TicketDesk2.sln
 RUN xcopy c:\build\TicketDesk.Web.Client\* c:\inetpub\wwwroot /s
-
-#RUN powershell .\add_certificate_IIS
 
 ENTRYPOINT powershell .\Startup

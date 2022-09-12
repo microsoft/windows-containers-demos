@@ -1,3 +1,5 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
 #----------Create Azure Container registry---------------------
 
 # setting variables from variable file

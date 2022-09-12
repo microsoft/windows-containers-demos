@@ -1,3 +1,5 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -9,3 +11,4 @@ spec:
   resources:
     requests:
       storage: 5Gi
+  volumeName: azurefile

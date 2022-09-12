@@ -21,7 +21,6 @@ we are containerizing the .NET Framework web apps with Windows Containers and Do
 - Azure monitoring (for logging and debugging purpose)
 - Azure defender and security tool (for security purpose and scanning)
 - Network Policy for CNI- Calico
-- Azure Active Directory (AAD)
 - gMSA on Azure Kubernetes Service
 - Cluster Auto Scaler
 - Cluster Auto Upgrade
@@ -50,11 +49,12 @@ WORKDIR c:/build
 COPY . c:/build
 
 # Install build tools
+RUN powershell Invoke-WebRequest https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile Nuget.exe
 RUN powershell add-windowsfeature web-asp-net45 \
     && choco install microsoft-build-tools -y --allow-empty-checksums -version 14.0.23107.10 \
     && choco install dotnet4.6-targetpack --allow-empty-checksums -y \
-    && c:\build\nuget.exe install MSBuild.Microsoft.VisualStudio.Web.targets -Version 14.0.0.3 \
-    && c:\build\nuget.exe install WebConfigTransformRunner -Version 1.0.0.1
+    && nuget install MSBuild.Microsoft.VisualStudio.Web.targets -Version 14.0.0.3 \
+    && nuget install WebConfigTransformRunner -Version 1.0.0.1
 	
 # Install LogMonitor.exe
 RUN powershell New-Item -ItemType Directory C:\LogMonitor; $downloads = @( @{ uri = 'https://github.com/microsoft/windows-container-tools/releases/download/v1.1/LogMonitor.exe'; outFile = 'C:\LogMonitor\LogMonitor.exe' }, @{ uri = 'https://raw.githubusercontent.com/microsoft/iis-docker/master/windowsservercore-insider/LogMonitorConfig.json'; outFile = 'C:\LogMonitor\LogMonitorConfig.json' } ); $downloads.ForEach({ Invoke-WebRequest -UseBasicParsing -Uri $psitem.uri -OutFile $psitem.outFile })
@@ -119,15 +119,6 @@ D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\
 ```
 *Implementing blob storage from code side*
 
-## Implementing Azure Active Directory Applications
-For integrating AAD with Azure Kubernetes Service, we need to create a server and client app, which will be used to authenticate the users connecting to AKS through AAD.
-This is the authentication part.
-For the authorization part, it will be managed by Role and Role Binding Kubernetes objects which is further explained.
-```
-D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\create-ad-apps.ps1
-```
-After creation of AAD applications you will see the Server App ID, Server App Secret, Client App ID on powershell console, you have to update these values in Variables.txt file before creating Kubernetes Cluster.
-
 ## Create Azure AKS Cluster
 This script will create AKS and add a window's node pool which enables Cluster Autoscaling, Cluster Auto-Upgrade, Azure Monitor, Calico as a network Policy, Application Gateway to be used as the ingress of an AKS cluster.
 ```
@@ -139,13 +130,7 @@ Now Connect to AKS cluster as admin using command on connect on Portal
 ```
 az aks get-credentials --resource-group=$aksResourceGroupName --name=$clusterName --admin 
 ```
-then Run command kubectl get nodes ,where we can see user don't have access to cluster so
-Apply role ,role binding for accessing cluster which is Authorization part for AAD
-```
-cd D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\deployment-scripts\role-binding-mainfest-files 
-kubectl apply -f .
-```
-then You can access nodes, pods etc.
+You can access nodes, pods etc.
 
 ## Create Azure SQL database
 ```
@@ -186,20 +171,19 @@ Assign access policy for AKS Cluster managed identity.
 open an azure portal and perform the following steps: -
 - Click on Azure-Key-Vault, go to the Access Policies and click on Add Access policy
 - Select Get from dropdown for secrets
-- Select Get from dropdown for certificate permission
 - Then click on Select Principle and search for cluster name, agent pool and then click on select
 - click on ADD button
 - At last, after adding policy click on save button.
 
-Now Create database secret, certificate secret and storage connection secret using CLI or manually on portal.
+Now Create database connection string secret and storage account connection string secret using CLI or manually on portal.
 
 On Powershell
 ```
 $keyVaultName = "<Azure-Key-Vault-Name>"
 $secret1Name = "CatalogDBContext"
 $secret2Name = "StorageConnectionString"
-az keyvault secret set --name $secret1Name --value "DataSource=winaksserver.database.windows.net;UserId=test;Password=Root#123;InitialCatalog=eShopPorted " –-vault-name $keyVaultName
-az keyvault secret set --name $secret2Name --value "DataSource=storageaccountconnectionstring" –-vault-name $keyVaultName
+az keyvault secret set --name $secret1Name --value "DataSource=<database-connection-string> " –-vault-name $keyVaultName
+az keyvault secret set --name $secret2Name --value "DataSource=<storageaccountconnectionstring>" –-vault-name $keyVaultName
 ```
 
 ## Create Azure File Share Secrets
@@ -224,7 +208,6 @@ kubectl get pods
 
 ## Deploy Application on AKS with gMSA
 Before deployment , enable gMSA on Azure Kubernetes Service using (https://docs.microsoft.com/en-us/virtualization/windowscontainers/manage-containers/gmsa-aks-ps-module)
-
 
 
 Apply Manifest files
