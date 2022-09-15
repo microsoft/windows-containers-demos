@@ -31,7 +31,7 @@ Under each folder of the apps, you can find the following:
 ## We welcome your feedback
 Please feel free to download and try them out. **Please also note these apps are developed for demo purpose only.** There is no customer support provided for these apps.
 
-We are not actively monitoring the issues here. For any questions or feedback, please go to our GitHub community and file issues there: https://github.com/microsoft/Windows-Containers/issues. Or you can privately email us: win-containers@microsoft.com
+For any questions or feedback, please feel free to share at the Discussions tab. Or you can privately email us: win-containers@microsoft.com
 
 ## Have fun!
 
