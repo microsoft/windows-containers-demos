@@ -2,9 +2,9 @@
 Windows Container Demos is a collection of demo apps to show how you can modernize Windows Server applications with Windows containers and then deploy and run on Azure Kubernetes Service (AKS).
 
 ## List of Demo Apps:
-1. **TicketDesk**: A legacy backoffice web apps (ASP.NET MVC) from https://github.com/NullDesk/ticketdesk/tree/ticketdesk-v2.1/TicketDesk-2, running on Windows Server 2019 Server Core containers.
+1. **TicketDesk**: A legacy back-office web apps (ASP.NET MVC) from https://github.com/NullDesk/ticketdesk/tree/ticketdesk-v2.1/TicketDesk-2, running on Windows Server 2019 Server Core containers.
 
-2. **eShop**: A legacy backoffice web app (ASP.NET WebForms and MVC), a sample from .NET architecture: https://github.com/dotnet-architecture/eShopModernizing, running on Windows Server 2019 Server Core containers.
+2. **eShop**: A legacy back-office web app (ASP.NET WebForms and MVC), a sample from .NET architecture: https://github.com/dotnet-architecture/eShopModernizing, running on Windows Server 2019 Server Core containers.
 
 3. **Django poll app**: A Python app modeled after this Django-Poll-App https://github.com/devmahmud/Django-Poll-App, running on Windows Server 2019 Nano Server containers.
 
@@ -20,7 +20,7 @@ Under each folder of the apps, you can find the following:
 - Azure key vaults (database secret,StorageConnectionString)
 - Azure SQL
 - Azure Storage Account (file share,blob storage)
-- Azure monitoring (for logging and debugging purpose)
+- Azure Monitor (for logging and debugging purpose)
 - Azure defender and security tool (for security purpose and scanning)
 - Network Policy for CNI- Calico
 - gMSA on Azure Kubernetes Service
