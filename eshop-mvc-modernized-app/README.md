@@ -1,18 +1,23 @@
 ## eShopModernizing - Modernizing ASP.NET Web apps with Windows Containers and Azure Cloud
+
 This repo provides sample of legacy eShop web apps and how you can modernize it with Windows Containers and Azure Cloud.
 
 ## Overview
+
 Windows Containers should be used as a way to improve deployments to production, development, and test environments of existing .NET applications based on .NET Framework technologies and
 Deploying the ASP.NET MVC app (eShopModernizedMVC) to the Azure Kubernetes Service.
 
 ## Goals for this walkthrough
+
 we are containerizing the .NET Framework web apps with Windows Containers and Docker without changing its code and then Deploying this Windows Containers-based app to Azure Kubernetes Service.
 
 ## Pre-requisite on Windows machine/VM
+
 - *Docker Desktop on Windows*, For creating and building images of application.
 - *Azure CLI*, Azure Command-Line Interface (CLI) is a cross-platform command-line tool. You can use the Azure CLI for Windows to connect to Azure and execute administrative commands on Azure resources.
 
 ## Implemented Azure Services
+
 - Azure Kubernetes Service (AKS)
 - Azure Container Registry (ACR)
 - Azure key vaults (database secret,StorageConnectionString)
@@ -26,6 +31,7 @@ we are containerizing the .NET Framework web apps with Windows Containers and Do
 - Cluster Auto Upgrade
 
 ## Architecture
+
 Figure below shows the simple scenario of the original legacy ASP.NET web application
 
 ![image](images/legacy.png)
@@ -35,9 +41,10 @@ Figure below shows the containerized eShop legacy web application and deployment
 ![image](images/deployment.png)
 
 ## Containerizing existing .NET applications with Docker CLI and manually adding docker file
+
 This is the docker file
 
-```
+```dockerfile
 FROM mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2019  
 
 # Install Chocolatey
@@ -55,7 +62,7 @@ RUN powershell add-windowsfeature web-asp-net45 \
     && choco install dotnet4.6-targetpack --allow-empty-checksums -y \
     && nuget install MSBuild.Microsoft.VisualStudio.Web.targets -Version 14.0.0.3 \
     && nuget install WebConfigTransformRunner -Version 1.0.0.1
-	
+
 # Install LogMonitor.exe
 RUN powershell New-Item -ItemType Directory C:\LogMonitor; $downloads = @( @{ uri = 'https://github.com/microsoft/windows-container-tools/releases/download/v1.1/LogMonitor.exe'; outFile = 'C:\LogMonitor\LogMonitor.exe' }, @{ uri = 'https://raw.githubusercontent.com/microsoft/iis-docker/master/windowsservercore-insider/LogMonitorConfig.json'; outFile = 'C:\LogMonitor\LogMonitorConfig.json' } ); $downloads.ForEach({ Invoke-WebRequest -UseBasicParsing -Uri $psitem.uri -OutFile $psitem.outFile })
 
@@ -70,6 +77,7 @@ RUN c:\windows\system32\inetsrv\appcmd.exe set config -section:system.applicatio
 
 ENTRYPOINT powershell .\Startup; C:\\LogMonitor\\LogMonitor.exe ; C:\\ServiceMonitor.exe w3svc
 ```
+
 We are using Windows Server Core Image and Installing necessary tools for building our project.
 
 Startup PowerShell script will create an infinite loop to run the container.
@@ -79,31 +87,33 @@ Also implementing IIS Log Monitor for ASP.NET Windows Containers.
 
 ## Clone the repository
 
-```
+```powershell
 git clone https://github.com/microsoft/windows-containers-demos  #Working directory is D:/
 cd windows-containers-demos # Current working directory is D: \windows-containers-demos 
 ```
 
 ## Building Docker Image
 
-```
+```powershell
 cd D:\windows-containers-demos\eshop-mvc-modernized-app
 docker build -t eshopapp:v2.1  -f .\eshop.Dockerfile .
 ```
 
 ## Create Azure Services
+
 Now, first create Azure Container Registry.
 
 Open Powershell , login to Azure using command "az login".
 
-```
+```powershell
 D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\create-acr.ps1
 ```
 
 ## Publish/Push your custom Docker image into Azure Container Registry
+
 Open PowerShell , Login to Azure Container Registry
 
-```
+```powershell
 docker login <acr-container-registry>
 docker tag eshopapp:v2.1 <acr-container-registry>/eshopapp:v2.1
 docker push <acr-container-registry>/eshopapp:v2.1
@@ -112,28 +122,35 @@ docker push <acr-container-registry>/eshopapp:v2.1
 Now, Enable Microsoft Defender for container registries from the portal Which includes a vulnerability scanner to scan the images in Azure Container Registry registries and provide deeper visibility into your images vulnerabilities.
 
 ## Create file share and blob storage
+
 File Share will store Applications Raw data and Blob storage will store Application's Images.
 
-```
+```powershell
 D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\create-file-share.ps1
 ```
+
 *Implementing blob storage from code side*
 
 ## Create Azure AKS Cluster
+
 This script will create AKS and add a window's node pool which enables Cluster Autoscaling, Cluster Auto-Upgrade, Azure Monitor, Calico as a network Policy, Application Gateway to be used as the ingress of an AKS cluster.
-```
+
+```powershell
 D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\create-aks.ps1
 ```
+
 It will ask for device login enter code.
 Now Connect to AKS cluster as admin using command on connect on Portal
 
-```
+```powershell
 az aks get-credentials --resource-group=$aksResourceGroupName --name=$clusterName --admin 
 ```
+
 You can access nodes, pods etc.
 
 ## Create Azure SQL database
-```
+
+```powershell
 D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\create-sql-server-database.ps1
 ```
 
@@ -144,31 +161,41 @@ Next Query the database, use SSMS or Azure Sql databases Query Editor.
 Using SSMS/Azure Query Editor Enter your server admin login.
 You will get connected to Azure SQL database.
 Run the following SQL scripts on SQL query editor
-```
+
+```powershell
 D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\database-scripts
 dbo.catalog_brand_hilo.Sequence.sql
 dbo.catalog_hilo.Sequence.sql
 dbo.catalog_type_hilo.Sequence.sql
 ```
+
 Then Again Open Visual Studio IDE , Go to Package Manager Console perform database Migration steps.
-Run following commands,
-```
+Run following commands:
+
+```powershell
 Enable-Migrations -Force
 Add-Migration InitialCreate 
 update-database -Verbose
 ```
+
 Again Back to SSMS/Azure Query Editor. Run insert Query,
+
 ```
 insertdata.sql
 ```
+
 ## Create Azure Key Vault
+
 Cluster can access this key-vault secrets and certificate, save secrets and certificate in key vault, secrets containing connection string of SQL Server database and storage account connection string.
-```
+
+```powershell
 D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\create-key-vault.ps1
 ```
+
 Assign access policy for AKS Cluster managed identity.
 
-open an azure portal and perform the following steps: -
+open an azure portal and perform the following steps:
+
 - Click on Azure-Key-Vault, go to the Access Policies and click on Add Access policy
 - Select Get from dropdown for secrets
 - Then click on Select Principle and search for cluster name, agent pool and then click on select
@@ -178,7 +205,8 @@ open an azure portal and perform the following steps: -
 Now Create database connection string secret and storage account connection string secret using CLI or manually on portal.
 
 On Powershell
-```
+
+```powershell
 $keyVaultName = "<Azure-Key-Vault-Name>"
 $secret1Name = "CatalogDBContext"
 $secret2Name = "StorageConnectionString"
@@ -187,40 +215,50 @@ az keyvault secret set --name $secret2Name --value "DataSource=<storageaccountco
 ```
 
 ## Create Azure File Share Secrets
+
 kubernetes cluster will use this  secret and storage account key that should be used with file share mounting while pod deployment.
-```
+
+```powershell
 D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\aks-file-share-secrets.ps1
 ```
-Check Secrets using ,
-```
+
+Check Secrets using the following command:
+
+```powershell
 kubectl get secrets
 ```
 
 ## Install CSI Provider
+
 We are installing CSI provider using helm chart, by default CSI secret provider install for linux nodes we have to install it for our window's node for that enable windows parameters.
-```
+
+```powershell
 D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\deploy-csi-akv-provider.ps1
 ```
+
 Check secret provider pods on window's node
-```
+
+```powershell
 kubectl get pods
 ```
 
 ## Deploy Application on AKS with gMSA
-Before deployment , enable gMSA on Azure Kubernetes Service using (https://docs.microsoft.com/en-us/virtualization/windowscontainers/manage-containers/gmsa-aks-ps-module)
 
+Before deployment, enable gMSA on Azure Kubernetes Service using the [guidance](https://docs.microsoft.com/en-us/virtualization/windowscontainers/manage-containers/gmsa-aks-ps-module)
 
 Apply Manifest files
+
 - persistent-volume
 - persistent-volume-claim
 - secret-provider-class
 - eshop-deployment
 
-```
-cd  D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\deployment-scripts\app-deployment-mainfest-files 
+```powershell
+cd  D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\deployment-scripts\app-deployment-manifest-files
 kubectl apply -f .
 ```
-```
+
+```powershell
 kubectl get pods
 ```
 
@@ -232,9 +270,9 @@ For pod deployment specifying replica sets, set GMSA credential spec name for Po
 
 and using load balancer service for accessing deployment.
 
-
 Check the pod and services by accessing the service external IP
-```
+
+```powershell
 kubectl get pods
 kubectl get services
 ```
@@ -245,5 +283,3 @@ It will give the windows authentication prompt for credentials ,Enter gMSA user 
 
 *You can inspect the container's file system and check the file share mounting secrets and key vault secrets.*
 *we can check blob storage in storage account inside container where pics container is created where application images are stored.*
-
-

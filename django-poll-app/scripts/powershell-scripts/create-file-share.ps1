@@ -16,15 +16,15 @@ Write-Host "$resourceGroupName exists : $stgRgExists"
 
 if ($aksRgExists -eq $false) {
 	#Create resource group
-	Write-Host "Creating resource group $resourceGroupName in region $resourceGroupLocaltion" -ForegroundColor Yellow
+	Write-Host "Creating resource group $resourceGroupName in region $resourceGroupLocation" -ForegroundColor Yellow
 	az group create `
 		--name=$resourceGroupName `
-		--location=$resourceGroupLocaltion `
+		--location=$resourceGroupLocation `
 		--output=jsonc
 }
 
 # Create a storage account
-az storage account create -n $aksStorageAccountname -g $resourceGroupName -l $resourceGroupLocaltion --sku $aksStorageAccountSKU
+az storage account create -n $aksStorageAccountname -g $resourceGroupName -l $resourceGroupLocation --sku $aksStorageAccountSKU
 
 # Export the connection string as an environment variable, this is used when creating the Azure file share
 $AZURE_STORAGE_CONNECTION_STRING=$(az storage account show-connection-string -n $aksStorageAccountname -g $resourceGroupName -o tsv)

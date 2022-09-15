@@ -16,10 +16,10 @@ $akvRgExists = az group exists --name $resourceGroupName
 
 if ($akvRgExists -eq $false) {
     #Create resource group
-    Write-Host "Creating resource group $resourceGroupName in region $resourceGroupLocaltion" -ForegroundColor Yellow
+    Write-Host "Creating resource group $resourceGroupName in region $resourceGroupLocation" -ForegroundColor Yellow
     az group create `
         --name=$resourceGroupName `
-        --location=$resourceGroupLocaltion `
+        --location=$resourceGroupLocation `
         --output=jsonc
 }
 
@@ -32,7 +32,7 @@ if ($keyVaultExists -eq $false) {
     az keyvault create `
         --name=$akvName `
         --resource-group=$resourceGroupName `
-        --location=$resourceGroupLocaltion `
+        --location=$resourceGroupLocation `
         --output=jsonc
 }
 # retrieve existing AKS

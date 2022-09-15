@@ -1,30 +1,36 @@
 ## TicketDESK - Modernizing ASP.NET Web apps with Windows Containers and Azure Cloud
+
 This repo provides sample of legacy TicketDESK WebAapp and how you can modernize it with Windows Containers and Azure Cloud.
 
 ## Overview
+
 Windows Containers should be used as a way to improve deployments to production, development, and test environments of existing .NET applications based on .NET Framework technologies and 
 Deploying the ASP.NET MVC app (TicketDESK) to the Azure Kubernetes Service.
 
 ## Goals for this walkthrough
+
 We are containerizing the .NET Framework WebApps with Windows Containers and Docker without changing its code and then Deploying this Windows Containers-based app to Azure Kubernetes Service.
 
 ## Pre-requisite on Windows machine/VM
+
 - *Docker Desktop on Windows*, For creating and building images of application.
-- *Azure CLI*, Azure Command-Line Interface (CLI) is a cross-platform command-line tool. You can use the Azure CLI for Windows to connect to Azure and execute administrative commands on Azure resources. 
+- *Azure CLI*, Azure Command-Line Interface (CLI) is a cross-platform command-line tool. You can use the Azure CLI for Windows to connect to Azure and execute administrative commands on Azure resources.
 
 ## Implemented Azure Services
-- Azure Kubernetes Service (AKS)	
-- Azure Container Registry (ACR)	
-- Azure key vaults (database secret,StorageConnectionString)	
+
+- Azure Kubernetes Service (AKS)
+- Azure Container Registry (ACR)
+- Azure key vaults (database secret,StorageConnectionString)
 - Azure SQL
 - Azure Storage Account (file share)
 - Azure monitoring (for logging and debugging purpose)
-- Azure defender and security tool (for security purpose and scanning)	
-- Network Policy for CNI- Calico 
-- Cluster Auto Scaler	
+- Azure defender and security tool (for security purpose and scanning)
+- Network Policy for CNI- Calico
+- Cluster Auto Scaler
 - Cluster Auto Upgrade
 
 ## Architecture
+
 Figure below shows the simple scenario of the original legacy ASP.NET web application
 
 ![image](images/legacyApp.png)
@@ -36,7 +42,7 @@ Figure below shows the containerized TicketDesk legacy web application and deplo
 ## Containerizing existing .NET applications with Docker CLI and manually adding docker file 
 For ticket-desk-help app, following Dockerfile will be used
 
-```
+```dockerfile
 FROM mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2019
 
 # Install Chocolatey
@@ -64,8 +70,8 @@ RUN C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe /p:Platform="Any
 RUN xcopy c:\build\TicketDesk.Web.Client\* c:\inetpub\wwwroot /s
 
 ENTRYPOINT powershell .\Startup
-
 ```
+
 We are using Windows Server Core Image and installing necessary tools for building our project.
 
 Startup PowerShell script will create an infinite loop to run the container.
@@ -73,13 +79,14 @@ This prevents the container from exiting and getting web dot config location fro
 
 ## Clone the repository
 
-```json
+```powershell
 git clone https://github.com/microsoft/windows-containers-demos #Working directory is D:/
 cd windows-containers-demos
 ```
+
 ## Startup.ps1
 
-```
+```powershell
 .\Set-WebConfigSettings.ps1 -webConfig c:\inetpub\wwwroot\Web.config
 #.\add_certificate_IIS.ps1
 #C:\ServiceMonitor.exe w3svc
@@ -96,7 +103,7 @@ Then by using Startup powershell script it is creating an infinite loop to run t
 
 ## Set-WebConfigSettings.ps1
 
-```
+```powershell
 param (
     [string]$webConfig = "c:\inetpub\wwwroot\Web.config"
 )
@@ -133,35 +140,36 @@ if ($modified) {
 }
 ```
 
-Passing web.config file location to this second script Set-WebConfigSettings that reads environment variables and over-rides configuration in Web.config by modifying the file. 
+Passing web.config file location to this second script Set-WebConfigSettings that reads environment variables and over-rides configuration in Web.config by modifying the file.
 
 ## Building Docker Image
-```
+
+```powershell
 cd D:\windows-containers-demos\ticket-desk\application
 docker build -t ticketdesk:latest  -f .\ticketDesk.Dockerfile .
 ```
 
-Our Image is created 
+Our Image is created
 
 ## Create Azure Services
-Now, first create Azure Container Registry.
 
-Open Powershell , login to Azure using command "az login".
+First create Azure Container Registry.
 
-#### So we have created powershell script to create resources on Azure. Before running powershell script first we have to provide paramters value in *variable.txt* file.
+Open Powershell, login to Azure using command `az login`.
 
+> We have created powershell scripts to deploy resources on Azure. Before running powershell script first we have to provide parameters value in [variables.txt](.\scripts\powershell-scripts\variables.txt) file.
 
-The first service we are going to create is Azure Container Registry (ACR). It is used for storing application docker image, so , for creating ACR run following script
+The first service we are going to create is Azure Container Registry (ACR). It is used for storing application docker image, so, for creating ACR run following script
 
-
-```
+```powershell
 D:\windows-containers-demos\ticket-desk\scripts\powershell-scripts\create-acr.ps1
 ```
 
 ## Publish/Push your custom Docker image into Azure Container Registry
+
 Open PowerShell , Login to Azure Container Registry
 
-```
+```powershell
 docker login <acr-container-registry>
 docker tag ticketdesk:latest <acr-container-registry>/ticketdesk:latest
 docker push <acr-container-registry>/ticketdesk:latest
@@ -169,33 +177,40 @@ docker push <acr-container-registry>/ticketdesk:latest
 
 Now, enable Microsoft Defender for container registries from the portal which includes a vulnerability scanner to scan the images in Azure Container Registry registries and provide deeper visibility into your images vulnerabilities.
 
-## Create file share 
+## Create file share
+
 File Share will store Application's Raw data and Blob storage will store Application's Images.
 
-```
+```powershell
 D:\windows-containers-demos\ticket-desk\scripts\powershell-scripts\create-file-share.ps1
 ```
 
 ## Create Azure AKS Cluster
+
 This script will create AKS and add a window's node pool which enables Cluster Autoscaling, Cluster Auto-Upgrade, Azure Monitor, Calico as a network Policy, Application Gateway to be used as the ingress of an AKS cluster.
-```
+
+```powershell
 D:\windows-containers-demos\ticket-desk\scripts\powershell-scripts\create-aks.ps1
 ```
 
 We need to connect to AKS in order to run kubectl commands against the new cluster, as an admin.
 
-```
+```powershell
 az aks get-credentials --resource-group=$aksResourceGroupName --name=$clusterName --admin 
 ```
+
 Here, You can access nodes, pods etc.
 
 ## Create Azure SQL database
-```
+
+```powershell
 D:\windows-containers-demos\ticket-desk\scripts\powershell-scripts\create-sql-server-database.ps1
 ```
+
 Next Query the database, using SSMS, enter your server login.
 You will get connected to Azure SQL database.
- Run the SQL script on sql query editor.
+Run the SQL script on sql query editor.
+
 ```
 D:\windows-containers-demos\ticket-desk\application\TicketDesk.Web.Client\App_Data\NewDatabaseScripts
 1_TicketDeskObjects.sql
@@ -203,24 +218,29 @@ D:\windows-containers-demos\ticket-desk\application\TicketDesk.Web.Client\App_Da
 3_SecurityDefaultUsers.sql
 ```
 
-## Create Azure Key Vault 
+## Create Azure Key Vault
+
 Cluster can access this key-vault secrets and certificate, save secrets and certificate in key vault, secrets containing connection string of SQL Server database.
-```
+
+```powershell
 D:\windows-containers-demos\ticket-desk\scripts\powershell-scripts\create-key-vault.ps1
 ```
+
 Assign access policy for AKS Cluster managed identity.
 
-Open the Azure portal and perform the following steps: -
-- Click on Azure-Key-Vault, go to the Access Policies and click on Add Access policy. 
-- Select Get from dropdown for secrets .
-- Then click on Select Principle and search for "<clustername>-agentpool" and then click on select
-- Click on ADD button. 
-- At last, after adding policy click on save button. 
+Open the Azure portal and perform the following steps:
+
+1. Click on Azure-Key-Vault, go to the Access Policies and click on Add Access policy.
+2. Select Get from dropdown for secrets
+    - Then click on Select Principal and search for "<clustername>-agentpool" and then click on select
+    - Click on ADD button
+    - fter adding policy click on save button.
 
 Now Save database connection string in Azure Key Vault. Create database secret using CLI or manually on portal. So,here ,  ticketdESK application need 3 connection strings of database.So, store 3 connection strings into key vault secret, such as-
 
 On Powershell
-```
+
+```powershell
 $keyVaultName = "<Azure-Key-Vault-Name>"
 $secret1Name = "TicketDeskSecurityConnectionString"
 $secret2Name = "TicketDeskEntities"
@@ -234,38 +254,52 @@ az keyvault secret set --name $secret3Name --value "Data Source=<your sql server
 ```
 
 ## Create Azure File Share Secrets
+
 kubernetes cluster will use this secret for mounting file share as volume in application deployment.
-```
+
+```powershell
 D:\windows-containers-demos\ticket-desk\scripts\powershell-scripts\aks-file-share-secrets.ps1
 ```
+
 check Secrets
-```
+
+```powershell
 kubectl get secrets
 ```
 
 ## Install CSI Provider
+
 We are installing CSI provider using helm chart. By default CSI secret provider is installed for linux nodes.We have to install it for our window's node & enable windows parameters.
-```
+
+```powershell
 D:\windows-containers-demos\ticket-desk\scripts\powershell-scripts\deploy-csi-akv-provider.ps1
 ```
-Check secret provider pods on window's node.
-```
+
+Check secret provider pods on your Windows node.
+
+```powershell
 kubectl get pods
 ```
 
 ## Deploy Application on AKS
+
 Now we are ready to deploy application on AKS Cluster.
-Apply Manifest files
+
+You can now apply the manifest files:
+
 - persistent-volume
 - persistent-volume-claim
 - secret-provider-class
 - ticket-desk-deployment
 
-```
-cd  D:\windows-containers-demos\ticket-desk\scripts\deployment-scripts\app-deployment-mainfest-files 
+```powershell
+cd  D:\windows-containers-demos\ticket-desk\scripts\deployment-scripts\app-deployment-manifest-files 
 kubectl apply -f .
 ```
-```
+
+Confirm that your ticket desk deployment is running:
+
+```powershell
 kubectl get pods
 ```
 
@@ -277,13 +311,12 @@ For pod deployment we are specifying replica sets, environment variable taking v
 
 Then use load balancer service for accessing deployment.
 
-
 Check the pod and services by accessing the service external IP
-```
+
+```powershell
 kubectl get pods
 kubectl get services
 ```
-
 
 ![image](images/login.PNG)
 

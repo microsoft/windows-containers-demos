@@ -17,10 +17,10 @@ Write-Host "$resourceGroupName exists : " $aksRgExists
 
 if ($acrRgExists -eq $false) {
 	#Create resource group
-	Write-Host "Creating resource group $resourceGroupName in region $resourceGroupLocaltion" -ForegroundColor Yellow
+	Write-Host "Creating resource group $resourceGroupName in region $resourceGroupLocation" -ForegroundColor Yellow
 	az group create `
 		--name=$resourceGroupName `
-		--location=$resourceGroupLocaltion `
+		--location=$resourceGroupLocation `
 		--output=jsonc
 }
 
