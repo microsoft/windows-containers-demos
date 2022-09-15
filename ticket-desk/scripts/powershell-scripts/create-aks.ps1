@@ -19,10 +19,10 @@ Write-Host "$resourceGroupName exists : $aksRgExists"
 if ($aksRgExists -eq $false) {
 
     # Create resource group name
-    Write-Host "Creating resource group $resourceGroupName in region $resourceGroupLocaltion" -ForegroundColor Yellow
+    Write-Host "Creating resource group $resourceGroupName in region $resourceGroupLocation" -ForegroundColor Yellow
     az group create `
         --name=$resourceGroupName `
-        --location=$resourceGroupLocaltion `
+        --location=$resourceGroupLocation `
         --output=jsonc
 }
 
@@ -36,7 +36,7 @@ $aksCLusterExists = $aks.Length -gt 0
 if ($aksCLusterExists -eq $false) {
 
     # Create AKS cluster
-    Write-Host "Creating AKS cluster $clusterName with resource group $resourceGroupName in region $resourceGroupLocaltion" -ForegroundColor Yellow
+    Write-Host "Creating AKS cluster $clusterName with resource group $resourceGroupName in region $resourceGroupLocation" -ForegroundColor Yellow
 		
 	az aks create `
 		--resource-group=$resourceGroupName `
@@ -65,7 +65,7 @@ if ($aksCLusterExists -eq $false) {
 		--node-count=$winWorkerNodeCount `
         --enable-cluster-autoscaler `
         --min-count=$nodeMinCount `
-        --max-count=$nodeMaxCount ` 
+        --max-count=$nodeMaxCount
 
 }
 # Get credentials for newly created cluster

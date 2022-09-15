@@ -2,7 +2,7 @@
 # Licensed under the MIT license.
 subscriptionName="<subscriptionID>"
 resourceGroupName="<ResourceGroupName>"
-resourceGroupLocaltion="<Location>"
+resourceGroupLocation="<Location>"
 # CONTAINER REGISTERY DETAILS
 acrRegistryName="<ACR name>"
 # STORAGE ACCOUNT FILE SHARE DETAILS

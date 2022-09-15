@@ -16,10 +16,10 @@ Write-Host "$resourceGroupName exists : $sqlRgExists"
 if ($sqlRgExists -eq $false) {
 
     # Create resource group name
-    Write-Host "Creating resource group $resourceGroupName in region $resourceGroupLocaltion" -ForegroundColor Yellow
+    Write-Host "Creating resource group $resourceGroupName in region $resourceGroupLocation" -ForegroundColor Yellow
     az group create `
         --name=$resourceGroupName `
-        --location=$resourceGroupLocaltion `
+        --location=$resourceGroupLocation `
         --output=jsonc
 }
 
@@ -32,10 +32,10 @@ $sqlserverExists = $sqlserver.Length -gt 0
 
 if ($sqlserverExists -eq $false) {
 	# Create SQL Server
-    Write-Host "Creating SQL Server $sqlServerName with resource group $resourceGroupName in region $resourceGroupLocaltion" -ForegroundColor Yellow
+    Write-Host "Creating SQL Server $sqlServerName with resource group $resourceGroupName in region $resourceGroupLocation" -ForegroundColor Yellow
 	
 	az sql server create `
-		--location $resourceGroupLocaltion `
+		--location $resourceGroupLocation `
 		--resource-group $resourceGroupName `
 		--name $sqlServerName `
 		--admin-user $sqlServerAdminUser `
@@ -54,7 +54,7 @@ $sqlDatabaseExists = $sqlDatabase.Length -gt 0
 
 if ($sqlDatabaseExists -eq $false) {
 	# Create SQL Server
-    Write-Host "Creating SQL Database $sqlDatabaseName with resource group $resourceGroupName in region $resourceGroupLocaltion" -ForegroundColor Yellow
+    Write-Host "Creating SQL Database $sqlDatabaseName with resource group $resourceGroupName in region $resourceGroupLocation" -ForegroundColor Yellow
 	
 	az sql db create `
 	--name $sqlDatabaseName `
