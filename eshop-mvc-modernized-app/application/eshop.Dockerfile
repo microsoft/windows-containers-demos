@@ -21,7 +21,7 @@ RUN powershell New-Item -ItemType Directory C:\LogMonitor; $downloads = @( @{ ur
 
 RUN powershell remove-item C:\inetpub\wwwroot\iisstart.*
 
-RUN xcopy c:\build\src\eShopModernizedMVC\* c:\inetpub\wwwroot /s
+RUN xcopy .\application\src\eShopModernizedMVC\* c:\inetpub\wwwroot /s
 
 # Enable ETW logging for Default Web Site on IIS
 RUN c:\windows\system32\inetsrv\appcmd.exe set config -section:system.applicationHost/sites /"[name='Default Web Site'].logFile.logTargetW3C:"File,ETW"" /commit:apphost

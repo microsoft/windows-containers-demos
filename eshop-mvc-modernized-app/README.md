@@ -95,8 +95,9 @@ cd windows-containers-demos # Current working directory is D: \windows-container
 ## Building Docker Image
 
 ```powershell
+#Navigating to the folder below is optional. You might have cloned the repo to a different folder structure.
 cd D:\windows-containers-demos\eshop-mvc-modernized-app
-docker build -t eshopapp:v2.1  -f .\eshop.Dockerfile .
+docker build -t eshopapp:v2.1  -f .\application\eshop.Dockerfile .
 ```
 
 ## Create Azure Services
