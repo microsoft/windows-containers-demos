@@ -88,13 +88,13 @@ Also implementing IIS Log Monitor for ASP.NET Windows Containers.
 
 ```powershell
 git clone https://github.com/microsoft/windows-containers-demos  #Working directory is D:/
-cd windows-containers-demos # Current working directory is D: \windows-containers-demos 
+cd windows-containers-demos # Current working directory is D:\windows-containers-demos 
 ```
 
 ## Building Docker Image
 
 ```powershell
-cd D:\windows-containers-demos\eshop-mvc-modernized-app
+cd D:\windows-containers-demos\eshop-mvc-modernized-app\application\
 docker build -t eshopapp:v2.1  -f .\eshop.Dockerfile .
 ```
 
