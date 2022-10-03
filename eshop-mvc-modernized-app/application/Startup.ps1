@@ -1,5 +1,12 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT license.
+
+# Update Web.config with Database and storage account connection strings
+.\Set-WebConfigSettings.ps1 -webConfig c:\inetpub\wwwroot\Web.config
+
+# Start ServiceMonitor
+C:\ServiceMonitor.exe w3svc
+
 $ErrorActionPreference = "Stop"
 
 Write-Output "Configuring IIS with authentication."
@@ -16,12 +23,6 @@ Start-IISCommitDelay
 Stop-IISCommitDelay
 
 Write-Output "IIS with authentication is ready."
-
-C:\ServiceMonitor.exe w3svc
-
-.\Set-WebConfigSettings.ps1 -webConfig c:\inetpub\wwwroot\Web.config
-#.\add_certificate_IIS.ps1
-#C:\ServiceMonitor.exe w3svc
 
 If (Test-Path Env:\ASPNET_ENVIRONMENT)
 {
