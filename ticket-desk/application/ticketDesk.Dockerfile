@@ -11,17 +11,18 @@ RUN powershell add-windowsfeature web-asp-net45 \
     && nuget install MSBuild.Microsoft.VisualStudio.Web.targets -Version 14.0.0.3 \
     && nuget install WebConfigTransformRunner -Version 1.0.0.1
 
-RUN powershell remove-item C:\inetpub\wwwroot\iisstart.*
-
 # Copy files
 RUN md c:\build
 WORKDIR c:/build
 COPY . c:/build
 
+RUN powershell remove-item C:\inetpub\wwwroot\iisstart.*
+
 # Restore packages, build, copy
-RUN nuget restore
 RUN powershell Invoke-WebRequest https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile c:/build/.nuget/nuget.exe
+RUN nuget restore
 RUN C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe /p:Platform="Any CPU" /p:VisualStudioVersion=12.0 /p:VSToolsPath=c:\MSBuild.Microsoft.VisualStudio.Web.targets.14.0.0.3\tools\VSToolsPath TicketDesk2.sln
 RUN xcopy c:\build\TicketDesk.Web.Client\* c:\inetpub\wwwroot /s
 
-ENTRYPOINT powershell .\Startup
+# Start application
+ENTRYPOINT ["powershell.exe", "./Startup.ps1"]
