@@ -68,7 +68,7 @@ This prevents the container from exiting and getting web dot config location fro
 
 ## Building Docker Image
 ```
-docker build -t eshopapp:v2.1  -f .\eshop.Dockerfile .
+docker build -t eshopapp:v2.1  -f .\application\eshop.Dockerfile .
 ```
 
 ## Create Azure Services
