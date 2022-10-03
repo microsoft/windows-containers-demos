@@ -48,10 +48,10 @@ WORKDIR c:/build
 COPY . c:/build
 
 # Install build tools
-RUN powershell Invoke-WebRequest https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile Nuget.exe
 RUN powershell add-windowsfeature web-asp-net45 \
     && choco install microsoft-build-tools -y --allow-empty-checksums -version 14.0.23107.10 \
     && choco install dotnet4.6-targetpack --allow-empty-checksums -y \
+    && choco install nuget.commandline --allow-empty-checksums -y \
     && nuget install MSBuild.Microsoft.VisualStudio.Web.targets -Version 14.0.0.3 \
     && nuget install WebConfigTransformRunner -Version 1.0.0.1
 
@@ -59,8 +59,7 @@ RUN powershell remove-item C:\inetpub\wwwroot\iisstart.*
 
 RUN xcopy c:\build\src\eShopModernizedMVC\* c:\inetpub\wwwroot /s
 
-ENTRYPOINT powershell .\Startup
-
+ENTRYPOINT ["powershell.exe", "./Startup.ps1"]
 ```
 We are using Windows Server Core Image and Installing necessary tools for building our project.
 
@@ -69,7 +68,7 @@ This prevents the container from exiting and getting web dot config location fro
 
 ## Building Docker Image
 ```
-docker build -t eshopapp:v2.1  -f .\eshop.Dockerfile .
+docker build -t eshopapp:v2.1  -f .\application\eshop.Dockerfile .
 ```
 
 ## Create Azure Services
