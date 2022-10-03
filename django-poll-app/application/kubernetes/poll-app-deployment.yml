@@ -12,6 +12,7 @@ spec:
       app: poll
   template:
     metadata:
+      name: poll
       labels:
         app: poll
     spec:
