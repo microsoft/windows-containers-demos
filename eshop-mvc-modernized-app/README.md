@@ -95,7 +95,7 @@ cd windows-containers-demos # Current working directory is D: \windows-container
 ## Building Docker Image
 
 ```powershell
-cd D:\windows-containers-demos\eshop-mvc-modernized-app
+cd D:\windows-containers-demos\eshop-mvc-modernized-app\application
 docker build -t eshopapp:v2.1  -f .\eshop.Dockerfile .
 ```
 
