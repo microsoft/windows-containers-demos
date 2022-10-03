@@ -17,10 +17,10 @@ Write-Host "$resourceGroupName exists : $mysqlRgExists"
 if ($mysqlRgExists -eq $false) {
 
     # Create resource group name
-    Write-Host "Creating resource group $resourceGroupName in region $resourceGroupLocaltion" -ForegroundColor Yellow
+    Write-Host "Creating resource group $resourceGroupName in region $resourceGroupLocation" -ForegroundColor Yellow
     az group create `
         --name=$resourceGroupName `
-        --location=$resourceGroupLocaltion `
+        --location=$resourceGroupLocation `
         --output=jsonc
 }
 
@@ -33,9 +33,9 @@ $mysqlserverExists = $mysqlserver.Length -gt 0
 
 if ($mysqlserverExists -eq $false) {
 	# Create MySQL Server
-    Write-Host "Creating MySQL Server $mysqlServerName with resource group $resourceGroupName in region $resourceGroupLocaltion" -ForegroundColor Yellow
+    Write-Host "Creating MySQL Server $mysqlServerName with resource group $resourceGroupName in region $resourceGroupLocation" -ForegroundColor Yellow
 	az mysql server create `
-		--location $resourceGroupLocaltion `
+		--location $resourceGroupLocation `
 		--resource-group $resourceGroupName `
 		--name $mysqlServerName `
 		--admin-user $mysqlServerAdminUser `
@@ -44,7 +44,7 @@ if ($mysqlserverExists -eq $false) {
                 --sku-name $mysqlskuname `
                 --ssl-enforcement Disabled `
                 --storage-size $mysqlstoragesize `
-		--output=jsonc
+		--output=jsonc `
 }
 
 $mysqlDatabase = az mysql db show `
@@ -57,7 +57,7 @@ $mysqlDatabaseExists = $mysqlDatabase.Length -gt 0
 
 if ($mysqlDatabaseExists -eq $false) {
 	# Create MySQL Server
-    Write-Host "Creating MySQL Database $mysqlDatabaseName with resource group $resourceGroupName in region $resourceGroupLocaltion" -ForegroundColor Yellow
+    Write-Host "Creating MySQL Database $mysqlDatabaseName with resource group $resourceGroupName in region $resourceGroupLocation" -ForegroundColor Yellow
 	
 	az mysql db create `
 	--name $mysqlDatabaseName `
