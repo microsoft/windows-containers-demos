@@ -83,7 +83,7 @@ Initially, we need to create Azure Container Registry(ACR):
 
 Open Powershell, login to Azure using the command *"az login"*.
 
-We have created powershell scripts to create resources on Azure. Before running these script, we need to specify parameter values in [variables.txt](.\scripts\powershell-scripts\variables.txt) file.
+We have created powershell scripts to create resources on Azure. Before running these script, we need to specify parameter values in [variables.txt](scripts/powershell-scripts/variables.txt) file.
 
 ACR is used to store docker image of the application. Follow the below path to get the script:
 
@@ -98,7 +98,7 @@ Run above script using:
 ## Push the custom Docker image to ACR
 
 ```powershell
-az acr login <acr-container-registry>
+az acr login -n <acr-container-registry-name>
 docker tag poll_app:latest <acr-container-registry>.azurecr.io/poll_app:latest
 docker push <acr-container-registry>.azurecr.io/poll_app:latest
 ```
