@@ -195,7 +195,7 @@ You can access nodes, pods etc.
 D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\create-sql-server-database.ps1
 ```
 
-First we need to update database connection string in web.config file from Visual Studio IDE for performing Database Migration steps.
+First we need to update database connection string in web.config file from Visual Studio IDE for performing Database Migration steps, this must be done in Visual Studio 2019 (it will fail in Visual Studio 2022).
 
 Next Query the database, use SSMS or Azure Sql databases Query Editor.
 
@@ -203,7 +203,8 @@ Using SSMS/Azure Query Editor Enter your server admin login.
 You will get connected to Azure SQL database.
 Run the following SQL scripts on SQL query editor. 
 
-Note that you will need to update the USE statments to match the name of your SQL DB. For example:
+ **_NOTE:_** You will need to update the USE statments to match the name of your SQL DB. 
+For example:
 USE [Microsoft.eShopOnContainers.Services.CatalogDb] to USE [eshop]
 
 ```powershell
