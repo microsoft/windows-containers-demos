@@ -123,11 +123,10 @@ akvName="eshopdemotest"
 # AZURE CLUSTER DETAILS
 clusterName="eshopdemotest"
 workerNodeCount="3"
-kubernetesVersion="1.21.9"
 networkPlugin="azure"
 loadBalancerSKU="standard"
 nodeVMSize="Standard_D2_v3"
-winNodePoolName="eshopdwin"
+winNodePoolName="ewin"
 winNodeVMSize="Standard_D4_v3"
 winWorkerNodeCount="3"
 enableAutoScaler=True
@@ -202,7 +201,10 @@ Next Query the database, use SSMS or Azure Sql databases Query Editor.
 
 Using SSMS/Azure Query Editor Enter your server admin login.
 You will get connected to Azure SQL database.
-Run the following SQL scripts on SQL query editor
+Run the following SQL scripts on SQL query editor. 
+
+Note that you will need to update the USE statments to match the name of your SQL DB. For example:
+USE [Microsoft.eShopOnContainers.Services.CatalogDb] to USE [eshop]
 
 ```powershell
 D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\database-scripts
