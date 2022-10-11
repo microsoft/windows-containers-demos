@@ -98,6 +98,49 @@ cd D:\windows-containers-demos\eshop-mvc-modernized-app\application
 docker build -t eshopapp:v2.1  -f .\eshop.Dockerfile .
 ```
 
+## Populate variables.txt 
+We have created powershell scripts to create resources on Azure. Before running these script, we need to specify parameter values in variables.txt file.
+Using a text editor of choice open the variables.txt file and provide appropriate values for the items in the <>.
+
+```code
+D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\variables.txt
+```
+Example
+```
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+subscriptionName="12366897-1234-abcd-abcd-1d5eav12a628"
+resourceGroupName="eshopdemotestrg"
+resourceGroupLocation="westus3"
+# CONTAINER REGISTERY DETAILS
+acrRegistryName="eshopdemotest"
+# STORAGE ACCOUNT FILE SHARE DETAILS
+aksStorageAccountname="eshopdemotest"
+aksFileSharename="eshopshare"
+aksStorageAccountSKU="Premium_LRS"
+# AZURE KEY VAULT DETAILS
+akvName="eshopdemotest"
+# AZURE CLUSTER DETAILS
+clusterName="eshopdemotest"
+workerNodeCount="3"
+kubernetesVersion="1.21.9"
+networkPlugin="azure"
+loadBalancerSKU="standard"
+nodeVMSize="Standard_D2_v3"
+winNodePoolName="eshopdwin"
+winNodeVMSize="Standard_D4_v3"
+winWorkerNodeCount="3"
+enableAutoScaler=True
+nodeMinCount=2
+nodeMaxCount=4
+enableMonitoring=True
+sqlServerName="eshopdemotest"
+sqlServerAdminUser="eshopsqladmin"
+sqlServerAdminUserPassword="pAssw0rdSc<l"
+sqlDatabaseName="eshop"
+```
+
+
 ## Create Azure Services
 
 Now, first create Azure Container Registry.
@@ -110,10 +153,10 @@ D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\
 
 ## Publish/Push your custom Docker image into Azure Container Registry
 
-Open PowerShell , Login to Azure Container Registry
+Open PowerShell , Login to Azure Container Registry.
 
 ```powershell
-docker login <acr-container-registry>
+az acr login --name <acr-container-registry>
 docker tag eshopapp:v2.1 <acr-container-registry>/eshopapp:v2.1
 docker push <acr-container-registry>/eshopapp:v2.1
 ```
