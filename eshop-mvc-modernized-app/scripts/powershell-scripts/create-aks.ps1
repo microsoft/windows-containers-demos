@@ -55,7 +55,18 @@ if ($aksCLusterExists -eq $false) {
         --max-count=$nodeMaxCount `
         --network-policy="calico" `
 		--output=jsonc
+}
 
+$aksWinNodePool = az aks nodepool show `
+    --cluster-name $clusterName `
+    --name $winNodePoolName `
+    --resource-group $resourceGroupName `
+    --query name | ConvertFrom-Json
+
+$aksWinNodePoolExists = $aksWinNodePool.Length -gt 0
+
+if ($aksWinNodePoolExists -eq $false) {
+$aksCLusterExists = $aks.Length -gt 0
 	az aks nodepool add `
 		--resource-group=$resourceGroupName `
 		--cluster-name=$clusterName `
@@ -66,7 +77,6 @@ if ($aksCLusterExists -eq $false) {
         --enable-cluster-autoscaler `
         --min-count=$nodeMinCount `
         --max-count=$nodeMaxCount
-
 }
 # Get credentials for newly created cluster
 Write-Host "Getting credentials for cluster $clusterName" -ForegroundColor Yellow
