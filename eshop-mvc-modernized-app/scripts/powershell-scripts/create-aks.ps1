@@ -46,7 +46,6 @@ if ($aksCLusterExists -eq $false) {
 		--enable-addons monitoring `
 		--auto-upgrade-channel stable `
 		--attach-acr=$acrRegistryName `
-		--kubernetes-version=$kubernetesVersion `
 		--network-plugin=$networkPlugin `
 		--load-balancer-sku=$loadBalancerSKU `
 		--node-vm-size=$nodeVMSize `
