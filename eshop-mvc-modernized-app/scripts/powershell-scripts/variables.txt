@@ -14,7 +14,6 @@ akvName="<keyvault-name>"
 # AZURE CLUSTER DETAILS
 clusterName="<cluster-name>"
 workerNodeCount="<NodeCount>"
-kubernetesVersion="1.21.9"
 networkPlugin="azure"
 loadBalancerSKU="<loadBalancerSKU>"
 nodeVMSize="<nodeVMSize>"
