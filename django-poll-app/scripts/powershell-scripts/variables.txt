@@ -23,13 +23,13 @@ winNodePoolName="<winNodePoolName>" # Set your Windows Node Poolname, this needs
 winNodeVMSize="<winNodeVMSize>" # Set your SKU size for your node pool VMs, e.g. Standard_DS2_v2
 winWorkerNodeCount=<winWorkerNodeCount> # Set the worker count, e.g. 2
 enableAutoScaler=True # For the purposes of this demo, you can keep this value
-nodeMinCount=<nodeMinCount> # Set the minimum number of workers in the default (linux) nodepool
-nodeMaxCount=<nodeMaxCount> # Set the maximum number of workers in the default (linux) nodepool
+workerNodeMaxCount=<workerNodeMaxCount> # Set the maximum number of workers in the default (linux) nodepool
+winWorkerNodeMaxCount=<winWorkerNodeMaxCount> # Set the maximum number of workers in the default (windows) nodepool
 enableMonitoring=True
-# CREATING MYSQL SERVER 
+# CREATING MYSQL SERVER
 mysqlServerName="<mysqlServerName>" # Set the name for your mysqlserver e.g. wincondemos-mysqlserver
+mysqlskuname="<mysqlskuname>" # Set to the SKU for your Azure MySQL Server e.g. GP_Gen5_4
+mysqlstoragesize="<mysqlstoragesize>" # Set the storage amount for your Azure MySQL Server, e.g. 5120
+mysqlDatabaseName="<mysqlDatabaseName>" # Set your Azure MySQL Server Database name e.g. wincondemos-mysqldb
 mysqlServerAdminUser="<mysqlServerAdminUser>" # Set the name for your administrator user e.g. myadmin
 mysqlServerAdminUserPassword="<mysqlServerAdminUserPassword>" # Set your administrator password for your Azure MySQLServer
-mysqlDatabaseName="<mysqlDatabaseName>" # Set your Azure MySQL Server Database name e.g. wincondemos-mysqldb
-mysqlskuname="<mysqlskuname>" # Set to the SKU for your Azure MySQL Server e.g. GP_Gen5_4
-mysqlstoragesize= "<mysqlstoragesize>" # Set the storage amount for your Azure MySQL Server, e.g. 5120

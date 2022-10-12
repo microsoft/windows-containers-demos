@@ -1,30 +1,31 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT license.
-subscriptionName="<subscriptionID>"
+subscriptionName="<subscriptionId>" # subscription Id
 resourceGroupName="<ResourceGroupName>"
-resourceGroupLocation="<Location>"
+resourceGroupLocation="<Location>" # You can adjust your Azure region for deployment (e.g. some services may be available in westus2 or westus3)
 # CONTAINER REGISTERY DETAILS
-acrRegistryName="<ACR name>"
+acrRegistryName="<ACR name>" # Set to your ACR name e.g. mywincondemoacr
 # STORAGE ACCOUNT FILE SHARE DETAILS
-aksStorageAccountname="<StorageAccountname>"
-aksFileSharename="<FileSharename>"
-aksStorageAccountSKU="<StorageAccountSKU>"
+aksStorageAccountname="<StorageAccountname>" # Set to your Azure Storage Account name e.g. mywincondemosa
+aksFileSharename="<FileSharename>" # Set to your Azure Storage file share e.g. wincondemos-fileshare
+aksStorageAccountSKU="<StorageAccountSKU>" # Select your Azure Storage Account SKU, e.g. Standard_LRS
 # AZURE KEY VAULT DETAILS
-akvName="<keyvault-name>"
+akvName="<keyvault-name>" # Set to your azure key vault name e.g. wincondemos-akv
 # AZURE CLUSTER DETAILS
-clusterName="<cluster-name>"
-workerNodeCount="<NodeCount>"
-networkPlugin="azure"
-loadBalancerSKU="<loadBalancerSKU>"
-nodeVMSize="<nodeVMSize>"
-winNodePoolName="<winNodePoolName>"
-winNodeVMSize="<winNodeVMSize>"
-winWorkerNodeCount="<winWorkerNodeCount>"
-enableAutoScaler=True
-nodeMinCount=<nodeMinCount>
-nodeMaxCount=<nodeMaxCount>
+clusterName="<cluster-name>" # Set to your AKS cluster name e.g. wincondemos-aks
+workerNodeCount="<NodeCount>" # Set number of workers
+networkPlugin="azure" # Set your network plugin, for demo purposes, the default of azure is sufficient
+loadBalancerSKU="<loadBalancerSKU>" # Select your Azure Load Balancer SKU, e.g. Standard
+nodeVMSize="<nodeVMSize>" # Select your node VM size, you can use something like Standard_DS2_v2
+winNodePoolName="<winNodePoolName>" # Set your Windows Node Poolname, this needs to be alphanumeric and at most 6 characters, e.g. wcdnp (windows containers demos node pool)
+winNodeVMSize="<winNodeVMSize>" # Set your SKU size for your node pool VMs, e.g. Standard_DS2_v2
+winWorkerNodeCount="<winWorkerNodeCount>" # Set the worker count, e.g. 2
+enableAutoScaler=True # For the purposes of this demo, you can keep this value
+workerNodeMaxCount=<workerNodeMaxCount> # Set the maximum number of workers in the default (linux) nodepool
+winWorkerNodeMaxCount=<winWorkerNodeMaxCount> # Set the maximum number of workers in the default (windows) nodepool
 enableMonitoring=True
-sqlServerName="<sqlServerName>"
-sqlServerAdminUser="<sqlServerAdminUser>"
-sqlServerAdminUserPassword="<sqlServerAdminUserPassword>"
-sqlDatabaseName="<sqlDatabaseName>"
+# CREATING SQL SERVER
+sqlServerName="<sqlServerName>" # Set the name for your sqlserver e.g. wincondemos-sqlserver
+sqlDatabaseName="<sqlServerAdminUser>" # Set your Azure SQL Server Database name e.g. wincondemos-sqldb
+sqlServerAdminUser="<sqlServerAdminUserPassword>" # Set the name for your administrator user e.g. myadmin
+sqlServerAdminUserPassword="<sqlDatabaseName>" # Set your administrator password for your Azure SQLServer

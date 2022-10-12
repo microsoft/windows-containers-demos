@@ -231,32 +231,10 @@ insertdata.sql
 
 ## Create Azure Key Vault
 
-Cluster can access this key-vault secrets and certificate, save secrets and certificate in key vault, secrets containing connection string of SQL Server database and storage account connection string.
+Cluster can access this key-vault secrets and certificate, save secrets and certificate in key vault, secrets containing connection string of SQL Server database and storage account connection string. Also, assigns the access policy for AKS Cluster managed identity.
 
 ```powershell
 D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\create-key-vault.ps1
-```
-
-Assign access policy for AKS Cluster managed identity.
-
-open an azure portal and perform the following steps:
-
-- Click on Azure-Key-Vault, go to the Access Policies and click on Add Access policy
-- Select Get from dropdown for secrets
-- Then click on Select Principle and search for cluster name, agent pool and then click on select
-- click on ADD button
-- At last, after adding policy click on save button.
-
-Now Create database connection string secret and storage account connection string secret using CLI or manually on portal.
-
-On Powershell
-
-```powershell
-$keyVaultName = "<Azure-Key-Vault-Name>"
-$secret1Name = "CatalogDBContext"
-$secret2Name = "StorageConnectionString"
-az keyvault secret set --name $secret1Name --value "Data Source=<your sql server host>;User Id=<your sql server username>;Password=<Your SQl server password>;Initial Catalog=<your database name>;" –-vault-name $keyVaultName
-az keyvault secret set --name $secret2Name --value "<storageaccountconnectionstring>" –-vault-name $keyVaultName
 ```
 
 ## Create Azure File Share Secrets
