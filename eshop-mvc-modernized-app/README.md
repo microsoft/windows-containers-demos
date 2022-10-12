@@ -98,6 +98,48 @@ cd D:\windows-containers-demos\eshop-mvc-modernized-app\application
 docker build -t eshopapp:v2.1  -f .\eshop.Dockerfile .
 ```
 
+## Populate variables.txt 
+We have created powershell scripts to create resources on Azure. Before running these script, we need to specify parameter values in variables.txt file.
+Using a text editor of choice open the variables.txt file and provide appropriate values for the items in the <>.
+
+```code
+D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\variables.txt
+```
+Example
+```
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+subscriptionName="12366897-1234-abcd-abcd-1d5eav12a628"
+resourceGroupName="eshopdemotestrg"
+resourceGroupLocation="westus3"
+# CONTAINER REGISTERY DETAILS
+acrRegistryName="eshopdemotest"
+# STORAGE ACCOUNT FILE SHARE DETAILS
+aksStorageAccountname="eshopdemotest"
+aksFileSharename="eshopshare"
+aksStorageAccountSKU="Premium_LRS"
+# AZURE KEY VAULT DETAILS
+akvName="eshopdemotest"
+# AZURE CLUSTER DETAILS
+clusterName="eshopdemotest"
+workerNodeCount="3"
+networkPlugin="azure"
+loadBalancerSKU="standard"
+nodeVMSize="Standard_D2_v3"
+winNodePoolName="ewin"
+winNodeVMSize="Standard_D4_v3"
+winWorkerNodeCount="3"
+enableAutoScaler=True
+nodeMinCount=2
+nodeMaxCount=4
+enableMonitoring=True
+sqlServerName="eshopdemotest"
+sqlServerAdminUser="eshopsqladmin"
+sqlServerAdminUserPassword="pAssw0rdSc<l"
+sqlDatabaseName="eshop"
+```
+
+
 ## Create Azure Services
 
 Now, first create Azure Container Registry.
@@ -110,10 +152,10 @@ D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\
 
 ## Publish/Push your custom Docker image into Azure Container Registry
 
-Open PowerShell , Login to Azure Container Registry
+Open PowerShell , Login to Azure Container Registry.
 
 ```powershell
-docker login <acr-container-registry>
+az acr login --name <acr-container-registry>
 docker tag eshopapp:v2.1 <acr-container-registry>/eshopapp:v2.1
 docker push <acr-container-registry>/eshopapp:v2.1
 ```
@@ -153,13 +195,17 @@ You can access nodes, pods etc.
 D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\powershell-scripts\create-sql-server-database.ps1
 ```
 
-First we need to update database connection string in web.config file from Visual Studio IDE for performing Database Migration steps.
+First we need to update database connection string in web.config file from Visual Studio IDE for performing Database Migration steps, this must be done in Visual Studio 2019 (it will fail in Visual Studio 2022).
 
 Next Query the database, use SSMS or Azure Sql databases Query Editor.
 
 Using SSMS/Azure Query Editor Enter your server admin login.
 You will get connected to Azure SQL database.
-Run the following SQL scripts on SQL query editor
+Run the following SQL scripts on SQL query editor. 
+
+ **_NOTE:_** You will need to update the USE statments to match the name of your SQL DB. 
+For example:
+USE [Microsoft.eShopOnContainers.Services.CatalogDb] to USE [eshop]
 
 ```powershell
 D:\windows-containers-demos\eshop-mvc-modernized-app\scripts\database-scripts

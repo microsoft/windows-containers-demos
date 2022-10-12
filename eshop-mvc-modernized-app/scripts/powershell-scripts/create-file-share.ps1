@@ -23,7 +23,7 @@ if ($aksRgExists -eq $false) {
 }
 
 # Create a storage account
-az storage account create -n $aksStorageAccountname -g $resourceGroupName -l $resourceGroupLocation --sku $aksStorageAccountSKU
+az storage account create -n $aksStorageAccountname -g $resourceGroupName -l $resourceGroupLocation --sku $aksStorageAccountSKU --kind FileStorage
 
 # Export the connection string as an environment variable, this is used when creating the Azure file share
 $AZURE_STORAGE_CONNECTION_STRING=$(az storage account show-connection-string -n $aksStorageAccountname -g $resourceGroupName -o tsv)
