@@ -4,11 +4,11 @@
 #----------Create Azure Container registry---------------------
 
 # setting variables from variable file
-Foreach ($i in $(Get-Content variables.txt)){Set-Variable -Name $i.split("=")[0] -Value $i.split("=",2)[1]}
+Foreach ($i in $(Get-Content variables.txt)){Set-Variable -Name $i.split("=")[0] -Value $i.split("=").split(" ")[1]}
 
 # Set Azure subscription name
 Write-Host "Setting Azure subscription to $subscriptionName"  -ForegroundColor Yellow
-az account set --subscription=$subscriptionName
+az account set --subscription $subscriptionName
 
 #check resource-group exists
 $acrRgExists = az group exists --name $resourceGroupName
@@ -44,6 +44,11 @@ if ($acrRegistryExists -eq $false) {
 		--sku=Basic `
 		--admin-enabled=true `
 		--output=jsonc
+
+    az acr identity assign `
+       --identities='[system]' `
+       --name=$acrRegistryName `
+       --resource-group=$resourceGroupName
 }
 
 #If ACR registry is created without admin user, it can be updated usign the command

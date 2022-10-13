@@ -221,37 +221,10 @@ D:\windows-containers-demos\ticket-desk\application\TicketDesk.Web.Client\App_Da
 
 ## Create Azure Key Vault
 
-Cluster can access this key-vault secrets and certificate, save secrets and certificate in key vault, secrets containing connection string of SQL Server database.
+Cluster can access this key-vault secrets and certificate, save secrets and certificate in key vault, secrets containing connection string of SQL Server database. Also, assigns the access policy for AKS Cluster managed identity.
 
 ```powershell
 D:\windows-containers-demos\ticket-desk\scripts\powershell-scripts\create-key-vault.ps1
-```
-
-Assign access policy for AKS Cluster managed identity.
-
-Open the Azure portal and perform the following steps:
-
-1. Click on Azure-Key-Vault, go to the Access Policies and click on Add Access policy.
-2. Select Get from dropdown for secrets
-    - Then click on Select Principal and search for "<clustername>-agentpool" and then click on select
-    - Click on ADD button
-    - fter adding policy click on save button.
-
-Now Save database connection string in Azure Key Vault. Create database secret using CLI or manually on portal. So,here ,  ticketdESK application need 3 connection strings of database.So, store 3 connection strings into key vault secret, such as-
-
-On Powershell
-
-```powershell
-$keyVaultName = "<Azure-Key-Vault-Name>"
-$secret1Name = "TicketDeskSecurityConnectionString"
-$secret2Name = "TicketDeskEntities"
-$secret3Name = "ElmahLog"
-
-az keyvault secret set --name $secret1Name --value "Data Source=<your sql server host>;Initial Catalog=<your database name>;User Id=<your sql server username>;Password=<Your SQl server password>" –-vault-name $keyVaultName
-
-az keyvault secret set --name $secret2Name --value "metadata=res://*/Models.TicketDeskEntities.csdl|res://*/Models.TicketDeskEntities.ssdl|res://*/Models.TicketDeskEntities.msl;provider=System.Data.SqlClient;provider connection string='Data Source=<your sql server host>;Initial Catalog=<your database name>;User Id=<your sql server username>;Password=<Your SQl server password>'" –-vault-name $keyVaultName 
-
-az keyvault secret set --name $secret3Name --value "Data Source=<your sql server host>;Initial Catalog=<your database name>;User Id=<your sql server username>;Password=<Your SQl server password>" –-vault-name $keyVaultName
 ```
 
 ## Create Azure File Share Secrets

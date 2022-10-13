@@ -1,7 +1,7 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT license.
 
-Foreach ($i in $(Get-Content variables.txt)){Set-Variable -Name $i.split("=")[0] -Value $i.split("=",2)[1]}
+Foreach ($i in $(Get-Content variables.txt)){Set-Variable -Name $i.split("=")[0] -Value $i.split("=",2).split(" ")[1]}
 
 $subscriptionId = (az account show | ConvertFrom-Json).id
 $tenantId = (az account show | ConvertFrom-Json).tenantId
@@ -41,9 +41,9 @@ if ($mysqlserverExists -eq $false) {
 		--admin-user $mysqlServerAdminUser `
 		--admin-password $mysqlServerAdminUserPassword `
 		--public all `
-                --sku-name $mysqlskuname `
-                --ssl-enforcement Disabled `
-                --storage-size $mysqlstoragesize `
+        --sku-name $mysqlskuname `
+        --ssl-enforcement Disabled `
+        --storage-size $mysqlstoragesize `
 		--output=jsonc `
 }
 

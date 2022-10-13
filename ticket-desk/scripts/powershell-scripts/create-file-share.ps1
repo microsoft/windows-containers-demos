@@ -3,11 +3,11 @@
 #----------Create Azure Container registry---------------------
 
 # setting variables from variable file
-Foreach ($i in $(Get-Content variables.txt)){Set-Variable -Name $i.split("=")[0] -Value $i.split("=",2)[1]}
+Foreach ($i in $(Get-Content variables.txt)){Set-Variable -Name $i.split("=")[0] -Value $i.split("=").split(" ")[1]}
 
 # Set Azure subscription name
 Write-Host "Setting Azure subscription to $subscriptionName"  -ForegroundColor Yellow
-az account set --subscription=$subscriptionName
+az account set --subscription $subscriptionName
 
 $stgRgExists = az group exists --name $resourceGroupName
 

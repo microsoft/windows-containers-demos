@@ -1,13 +1,13 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT license.
-Foreach ($i in $(Get-Content variables.txt)){Set-Variable -Name $i.split("=")[0] -Value $i.split("=",2)[1]}
+Foreach ($i in $(Get-Content variables.txt)){Set-Variable -Name $i.split("=")[0] -Value $i.split("=").split(" ")[1]}
 
 $subscriptionId = (az account show | ConvertFrom-Json).id
 $tenantId = (az account show | ConvertFrom-Json).tenantId
 
 # Set Azure subscription name
 Write-Host "Setting Azure subscription to $subscriptionName"  -ForegroundColor Yellow
-az account set --subscription=$subscriptionName
+az account set --subscription $subscriptionName
 
 $sqlRgExists = az group exists --name $resourceGroupName
 
@@ -33,16 +33,21 @@ $sqlserverExists = $sqlserver.Length -gt 0
 if ($sqlserverExists -eq $false) {
 	# Create SQL Server
     Write-Host "Creating SQL Server $sqlServerName with resource group $resourceGroupName in region $resourceGroupLocation" -ForegroundColor Yellow
-	
+
 	az sql server create `
-		--location $resourceGroupLocation `
-		--resource-group $resourceGroupName `
 		--name $sqlServerName `
+		--resource-group $resourceGroupName `
+		--location $resourceGroupLocation `
 		--admin-user $sqlServerAdminUser `
 		--admin-password $sqlServerAdminUserPassword `
-		--enable-public-network true `
-		--output=jsonc
+		--output jsonc
 }
+
+$startIp="0.0.0.0"
+$endIp="0.0.0.0"
+az sql server firewall-rule create --resource-group $resourceGroupName --server $sqlServerName -n AllowYourIp --start-ip-address $startIp --end-ip-address $endIp
+
+az sql server show --name $sqlServerName --resource-group $resourceGroupName
 
 $sqlDatabase = az sql db show `
 				--name $sqlDatabaseName `

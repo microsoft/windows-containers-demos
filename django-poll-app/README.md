@@ -74,7 +74,7 @@ cd windows-containers-demos # Current working directory is D: \windows-container
 
 ```powershell
 cd D:\windows-containers-demos\django-poll-app\application
-docker build -t poll_app -f .\Dockerfile .
+docker build -t poll_app -f .\nanoserver.Dockerfile .
 ```
 
 ## Creating Azure Services
@@ -137,33 +137,13 @@ Connect with AKS to run kubectl commands for the new cluster.
 az aks get-credentials --resource-group=$aksResourceGroupName --name=$clusterName --admin
 ```
 
-## Create Azure Key Vault
-
-Cluster can access this key-vault secrets and certificate that contains connection string of MySQL server database.
-
-```powershell
-D:\windows-containers-demos\django-poll-app\scripts\powershell-scripts\create-key-vault.ps1
-```
-
-Assign access policy to AKS Cluster managed identity.
-
-Login to Azure portal and perform the following steps:
-
-- Click on Azure Key-Vault, go to Access Policies and click on Add Access policy.
-- Select "Get" from the dropdown for secrets .
-- Click on Select Principle and search for "<clustername>-agentpool" and click select
-- Click on ADD button.
-- Save the changes made.
-
-Save database connection string in Azure Key Vault. Create database secret manually on the portal. Django poll-app needs connection strings like: *DBName, DBUser, DBPassword, DBHost and DBPort* of the database to be stored in key vault secrets, and these are referenced through the secret provider class for your AKS deployment.
-
 ## Create Azure MySQL database
 
 ```powershell
 D:\windows-containers-demos\django-poll-app\scripts\powershell-scripts\create-mysql-server-database.ps1
 ```
 
-Run above script using:
+Run the script:
 
 ```powershell
 .\create-mysql-server-database.ps1
@@ -184,27 +164,26 @@ To use admin panel you need to create the superuser using the following command:
 python manage.py createsuperuser
 ```
 
-To run the application locally on container, execute the following command:
+## Create Azure Key Vault
+
+Cluster can access this key-vault secrets that contains connection string of MySQL server database. Also, assigns the access policy for AKS Cluster managed identity.
+
+```powershell
+D:\windows-containers-demos\django-poll-app\scripts\powershell-scripts\create-key-vault.ps1
+```
+
+Run the script:
+
+```powershell
+.\create-key-vault.ps1
+```
+
+To run the application locally on a container, execute the following command:
 
 ```powershell
 docker run -d -p 4000:8000 --name <container_name> -e db-host="<host>" -e db-name="<databasename>" -e db-user="<username>" -e db-password="<password>" -e db-port="<database_port>" <acr-container-registry>.azurecr.io/<image_name:tag>
 ```
 
-## Create Node Pool
-
-Before moving forward to create the secrets, we need to create the node pool manually from Azure portal.
-Steps to create the node pool are as follows:
-
-1. Login to Azure portal
-2. Search for Kubernetes services and go to Node pools
-3. Add a new node pool with:
-    - OS type: Windows
-    - Node size: B2ms
-    - Scale method: manual
-    - Node count range: 3
-4. Click Review+Create and then, Create.
-
-Once the Node pool gets created successfully, proceed further with creating the secrets.
 
 ## Create Azure File Share Secrets
 

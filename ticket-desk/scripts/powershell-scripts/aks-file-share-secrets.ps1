@@ -8,7 +8,7 @@
 
 # Get storage account key
 # setting variables from variable file
-Foreach ($i in $(Get-Content variables.txt)){Set-Variable -Name $i.split("=")[0] -Value $i.split("=",2)[1]}
+Foreach ($i in $(Get-Content variables.txt)){Set-Variable -Name $i.split("=")[0] -Value $i.split("=").split(" ")[1]}
 
 $STORAGE_KEY=$(az storage account keys list --resource-group $resourceGroupName --account-name $aksStorageAccountname --query "[0].value" -o tsv)
 

@@ -3,14 +3,14 @@
 # this file is used for creating Azure AKS Cluster with windows nodepool
 
 # setting variables from variable file
-Foreach ($i in $(Get-Content variables.txt)){Set-Variable -Name $i.split("=")[0] -Value $i.split("=",2)[1]}
+Foreach ($i in $(Get-Content variables.txt)){Set-Variable -Name $i.split("=")[0] -Value $i.split("=").split(" ")[1]}
 
 $subscriptionId = (az account show | ConvertFrom-Json).id
 $tenantId = (az account show | ConvertFrom-Json).tenantId
 
 # Set Azure subscription name
 Write-Host "Setting Azure subscription to $subscriptionName"  -ForegroundColor Yellow
-az account set --subscription=$subscriptionName
+az account set --subscription $subscriptionName
 
 $aksRgExists = az group exists --name $resourceGroupName
 
@@ -35,6 +35,7 @@ $aksCLusterExists = $aks.Length -gt 0
 
 if ($aksCLusterExists -eq $false) {
 
+    $acrId=az acr show --resource-group $resourceGroupName --name $acrRegistryName --query "id"
     # Create AKS cluster
     Write-Host "Creating AKS cluster $clusterName with resource group $resourceGroupName in region $resourceGroupLocation" -ForegroundColor Yellow
 
@@ -45,14 +46,14 @@ if ($aksCLusterExists -eq $false) {
 		--enable-managed-identity `
 		--enable-addons monitoring `
 		--auto-upgrade-channel stable `
-		--attach-acr=$acrRegistryName `
+		--attach-acr=$acrId `
 		--network-plugin=$networkPlugin `
 		--load-balancer-sku=$loadBalancerSKU `
 		--node-vm-size=$nodeVMSize `
 		--generate-ssh-keys `
         --enable-cluster-autoscaler `
-        --min-count=$nodeMinCount `
-        --max-count=$nodeMaxCount `
+        --min-count=$workerNodeCount `
+        --max-count=$workerNodeMaxCount `
         --network-policy="calico" `
 		--output=jsonc
 }
@@ -75,8 +76,8 @@ $aksCLusterExists = $aks.Length -gt 0
 		--node-vm-size=$winNodeVMSize `
 		--node-count=$winWorkerNodeCount `
         --enable-cluster-autoscaler `
-        --min-count=$nodeMinCount `
-        --max-count=$nodeMaxCount
+        --min-count=$winWorkerNodeCount `
+        --max-count=$winWorkerNodeMaxCount
 }
 # Get credentials for newly created cluster
 Write-Host "Getting credentials for cluster $clusterName" -ForegroundColor Yellow
